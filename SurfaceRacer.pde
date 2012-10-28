@@ -6,9 +6,13 @@
 // Basic example of falling rectangles
 
 import pbox2d.*;
+import org.jbox2d.common.*;
+import org.jbox2d.dynamics.joints.*;
 import org.jbox2d.collision.shapes.*;
+import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.common.*;
 import org.jbox2d.dynamics.*;
+import org.jbox2d.dynamics.contacts.*;
 
 // A reference to our box2d world
 PBox2D box2d;
@@ -17,6 +21,9 @@ PBox2D box2d;
 ArrayList<Boundary> boundaries;
 // A list for all of our rectangles
 ArrayList<Car> cars;
+
+float HORSEPOWERS = 100;
+float MAX_STEER_ANGLE = PI/3;
 
 void setup() {
   size(displayWidth, displayHeight);
@@ -54,46 +61,62 @@ void draw() {
   for (Boundary wall: boundaries) {
     wall.display();
   }
-
+  for (Car car: cars) {
+    car.update();
+  }
   // Display all the people
   for (Car car: cars) {
     car.display();
   }
-
-  // people that leave the screen, we delete them
-  // (note they have to be deleted from both the box2d world and our list
-  /*for (int i = cars.size()-1; i >= 0; i--) {
-    Car car = cars.get(i);
-    if (cs.done()) {
-      polygons.remove(i);
-    }
-  }*/
 }
 
 boolean sketchFullScreen() {
   return true;
 }
 
-void keyPressed() {
-  if (key == 'w' ) 
-  {
-    cars.get(0).accelerate(5);
+void keyPressed()
+{ 
+  Car currentCar = cars.get(0);
+  println(keyCode);
+  if(keyCode == 38){
+    println("UP");
+    currentCar.engineSpeed = HORSEPOWERS;
   }
-  else if(key == 's'){
-    cars.get(0).accelerate(-5);
-  } 
-  else if(key == 'a'){
-    cars.get(0).turn(5);
-  } 
-  else if(key == 'd'){
-    cars.get(0).turn(-5);
-  } 
-
+  if(keyCode == 40){
+    println("DOWN");
+    currentCar.engineSpeed = -HORSEPOWERS;
+  }
+  if(keyCode == 39){
+    println("RIGHT");
+    currentCar.steeringAngle = -MAX_STEER_ANGLE;
+  }
+  if(keyCode == 37){
+    println("LEFT");
+    currentCar.steeringAngle = MAX_STEER_ANGLE;
+  }
 }
-/*void mousePressed() {
-  CustomShape cs = new CustomShape(mouseX,mouseY);
-  polygons.add(cs);
-}*/
+ 
+void keyReleased()
+{ 
+  Car currentCar = cars.get(0);
+  println(keyCode);
+  if(keyCode == 38){
+    println("UP");
+    currentCar.engineSpeed = HORSEPOWERS;
+  }
+  if(keyCode == 40){
+    println("DOWN");
+    currentCar.engineSpeed = -HORSEPOWERS;
+  }
+  if(keyCode == 39){
+    println("RIGHT");
+    currentCar.steeringAngle = 0;
+  }
+  if(keyCode == 37){
+    println("LEFT");
+    currentCar.steeringAngle = 0;
+  }
+}
 
 
 
