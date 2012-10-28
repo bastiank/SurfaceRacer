@@ -26,7 +26,7 @@ ArrayList<Car> cars;
 ArrayList<CustomBoundary> customBoundaries;
 int borderspresent = 0;
 
-float HORSEPOWERS = 100;
+float HORSEPOWERS = 400;
 float MAX_STEER_ANGLE = PI/3;
 
 void setup() {

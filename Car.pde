@@ -57,23 +57,29 @@ class Car {
   
   //This function applies a "friction" in a direction orthogonal to the body's axis.
   void killOrthogonalVelocity(Body targetBody){
-    /*Vec2 localPoint = new Vec2(0,0);
-    Vec2 v = targetBody.getLinearVelocityFromLocalPoint(localPoint);
-    Vec2 a =  getDirectionVectorFromBody(targetBody);
-    float dp = v.x*a.x*+v.y*a.y;
-    Vec2 sidewaysAxis = new Vec2(a.x*dp,a.y*dp);
+    //Vec2 localPoint = new Vec2(0,0);
+    /*Vec2 v = targetBody.getLinearVelocity();
+    
+    Vec2 d =  getDirectionVectorFromBody(targetBody);
+    Vec2 d_ortho = new Vec2(d.y,d.x);
+    
+    float dp = v.x*d_ortho.x*+v.y*d_ortho.y;
+    Vec2 sidewaysAxis = new Vec2();*/
     
     //sidewaysAxis.Multiply(b2Math.b2Dot(velocity,sidewaysAxis))
     //sidewaysAxis.Multiply(b2Math.b2Dot(velocity,sidewaysAxis))
  
-    targetBody.setLinearVelocity(sidewaysAxis);//targetBody.GetWorldPoint(localPoint));*/
-    /*  var localPoint = new b2Vec2(0,0);
-  var velocity:b2Vec2 = targetBody.GetLinearVelocityFromLocalPoint(localPoint);
+    //targetBody.setLinearVelocity(sidewaysAxis);//targetBody.GetWorldPoint(localPoint));*/
+    Vec2 localPoint = new Vec2(0,0);
+    Vec2 velocity = targetBody.getLinearVelocityFromLocalPoint(localPoint);
+    float a = targetBody.getAngle();
+     
+    Vec2 sidewaysAxis = new Vec2((float)-Math.sin(a),(float)Math.cos(a));
+    
+    float dp = sidewaysAxis.x*velocity.x + sidewaysAxis.y*velocity.y; 
+    
  
-  var sidewaysAxis = targetBody.GetXForm().R.col2.Copy();
-  sidewaysAxis.Multiply(b2Math.b2Dot(velocity,sidewaysAxis))
- 
-  targetBody.SetLinearVelocity(sidewaysAxis);//targetBody.GetWorldPoint(localPoint));*/
+     targetBody.setLinearVelocity(new Vec2(sidewaysAxis.x * dp,sidewaysAxis.y * dp));//targetBody.GetWorldPoint(localPoint));*/
   }
 
   // Drawing the box
