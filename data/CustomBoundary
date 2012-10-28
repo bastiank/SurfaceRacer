@@ -1,18 +1,12 @@
-// The Nature of Code
-// <http://www.shiffman.net/teaching/nature>
-// Spring 2011
-// PBox2D example
-
-// A rectangular box
-class CustomBoundary {
+class Car {
 
   // We need to keep track of a Body and a width and height
   Body body;
-   
+
   // Constructor
-  CustomBoundary(String bodystring) {
+  Car(float x, float y) {
     // Add the box to the box2d world
-    makeBody(bodystring);
+    makeBody(new Vec2(x, y));
   }
 
   // This function removes the particle from the box2d world
@@ -21,7 +15,7 @@ class CustomBoundary {
   }
 
   // Is the particle ready for deletion?
-  boolean done() {
+  /*boolean done() {
     // Let's find the screen position of the particle
     Vec2 pos = box2d.getBodyPixelCoord(body);
     // Is it off the bottom of the screen?
@@ -30,7 +24,7 @@ class CustomBoundary {
       return true;
     }
     return false;
-  }
+  }*/
 
   // Drawing the box
   void display() {
@@ -43,7 +37,7 @@ class CustomBoundary {
     PolygonShape ps = (PolygonShape) f.getShape();
 
 
-    rectMode(CORNER);
+    rectMode(CENTER);
     pushMatrix();
     translate(pos.x, pos.y);
     rotate(-a);
@@ -61,38 +55,31 @@ class CustomBoundary {
   }
 
   // This function adds the rectangle to the box2d world
-  void makeBody(String bodystring) {
-   // int[] values = new int[7];
-    String[] stringSegments = new String[2];
-    stringSegments = bodystring.split(":");
-    int numberOfVertices = int(stringSegments[0]);
-    println(str(numberOfVertices));
-    String vertexString = stringSegments[1];
-    String[] vertexStrings = new String[numberOfVertices];
-    vertexStrings = trim(vertexString.split(","));
-    //println(vertexStrings); 
+  void makeBody(Vec2 center) {
+
     // Define a polygon (this is what we use for a rectangle)
     PolygonShape sd = new PolygonShape();
-    Vec2[] vertices = new Vec2[numberOfVertices];
 
-
-    for(int i = 0; i < numberOfVertices; i++){
-      int[] myvertex = new int[2];
-      myvertex = int(trim(vertexStrings[i].split("/")));
-      //println(myvertex);
-      vertices[i] = box2d.vectorPixelsToWorld(new Vec2(myvertex[0],myvertex[1]));
-    }
+    Vec2[] vertices = new Vec2[3];
+    vertices[0] = box2d.vectorPixelsToWorld(new Vec2(0,0));
+    vertices[1] = box2d.vectorPixelsToWorld(new Vec2(10, 20));
+    vertices[2] = box2d.vectorPixelsToWorld(new Vec2(0, 20));
+    //vertices[3] = box2d.vectorPixelsToWorld(new Vec2(random(-20, 0), random(-20, 0)));
 
     sd.set(vertices, vertices.length);
 
     // Define the body and make it from the shape
     BodyDef bd = new BodyDef();
-    bd.type = BodyType.STATIC;
-    bd.position.set(box2d.coordPixelsToWorld(vertices[0]));
+    bd.type = BodyType.DYNAMIC;
+    bd.position.set(box2d.coordPixelsToWorld(center));
     body = box2d.createBody(bd);
 
     body.createFixture(sd, 1.0);
 
+
+    // Give it some initial random velocity
+    body.setLinearVelocity(new Vec2(0,0));
+    body.setAngularVelocity(0);
   }
 }
 
