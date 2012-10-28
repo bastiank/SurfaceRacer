@@ -47,8 +47,8 @@ class CustomBoundary {
     pushMatrix();
     translate(pos.x, pos.y);
     rotate(-a);
-    fill(175);
-    stroke(0);
+    fill(0,0,0,50);
+    stroke(0,0,0,0);
     beginShape();
     //println(vertices.length);
     // For every vertex, convert to pixel vector

@@ -186,7 +186,7 @@ int main(int argc, char* argv[]) {
 		cvReleaseImage( &img );
 
 		// wait for a key
-		int key = cvWaitKey(0);
+		int key = cvWaitKey(500);
 		if(key == 113) {
 			usb_close( s40 );
 			return 0;

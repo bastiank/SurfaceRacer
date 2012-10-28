@@ -13,11 +13,16 @@ class Car {
  PImage img;
  int carwidth = 0;
   // Constructor
-  Car(float x, float y, float w, float h) {
+  Car(float x, float y, float w, float h, int styleVariant) {
     // Add the box to the box2d world
     makeBody(new Vec2(x, y),w,h);
     carwidth = int(w);
-     img=loadImage("Speeder-GTA1.png");
+    if (styleVariant==0) img=loadImage("BeastGTS-GTA1.png");
+    if (styleVariant==1) img=loadImage("Bulldog-GTA1.png");
+    if (styleVariant==2) img=loadImage("Cossie-GTA1.png");
+    if (styleVariant==3) img=loadImage("Speeder-GTA1.png");
+    if (styleVariant==4) img=loadImage("SquadCar-GTA1-LibertyCity.png");
+    if (styleVariant>4)  img=loadImage("Taxi-GTA1-LibertyCity.png");
   }
   float getSpeed(){
     return  body.getLinearVelocity().length();
