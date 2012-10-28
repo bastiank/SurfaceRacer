@@ -10,11 +10,10 @@ class Car {
   RevoluteJoint rightJoint;
   float engineSpeed = 0;
   float steeringAngle = 0;
-
   // Constructor
-  Car(float x, float y) {
+  Car(float x, float y, float w, float h) {
     // Add the box to the box2d world
-    makeBody(new Vec2(x, y));
+    makeBody(new Vec2(x, y),w,h);
   }
 
   // This function removes the particle from the box2d world
@@ -57,19 +56,6 @@ class Car {
   
   //This function applies a "friction" in a direction orthogonal to the body's axis.
   void killOrthogonalVelocity(Body targetBody){
-    //Vec2 localPoint = new Vec2(0,0);
-    /*Vec2 v = targetBody.getLinearVelocity();
-    
-    Vec2 d =  getDirectionVectorFromBody(targetBody);
-    Vec2 d_ortho = new Vec2(d.y,d.x);
-    
-    float dp = v.x*d_ortho.x*+v.y*d_ortho.y;
-    Vec2 sidewaysAxis = new Vec2();*/
-    
-    //sidewaysAxis.Multiply(b2Math.b2Dot(velocity,sidewaysAxis))
-    //sidewaysAxis.Multiply(b2Math.b2Dot(velocity,sidewaysAxis))
- 
-    //targetBody.setLinearVelocity(sidewaysAxis);//targetBody.GetWorldPoint(localPoint));*/
     Vec2 localPoint = new Vec2(0,0);
     Vec2 velocity = targetBody.getLinearVelocityFromLocalPoint(localPoint);
     float a = targetBody.getAngle();
@@ -120,11 +106,11 @@ class Car {
   }
 
   // This function adds the rectangle to the box2d world
-  void makeBody(Vec2 center) {   
-    Vec2 leftRearWheelPosition= new Vec2(center.x-15,center.x+19);
-    Vec2 rightRearWheelPosition = new Vec2(center.x+15,center.x+19);
-    Vec2 leftFrontWheelPosition= new Vec2(center.x-15,center.y-19);
-    Vec2 rightFrontWheelPosition = new Vec2(center.x+15,center.y-19);
+  void makeBody(Vec2 center, float w, float h) {   
+    Vec2 leftRearWheelPosition= new Vec2(center.x-w/2,center.x+h/2-10);
+    Vec2 rightRearWheelPosition = new Vec2(center.x+w/2,center.x+h/2-10);
+    Vec2 leftFrontWheelPosition= new Vec2(center.x-w/2,center.y-h/2+10);
+    Vec2 rightFrontWheelPosition = new Vec2(center.x+w/2,center.y-h/2+10);
     
     // define our body
     BodyDef bodyDef = new BodyDef();
@@ -160,8 +146,8 @@ class Car {
     // define our shapes
     PolygonShape boxDef = new PolygonShape();
     FixtureDef boxFix = new FixtureDef();
-    float box2dW = box2d.scalarPixelsToWorld(30/2);
-    float box2dH = box2d.scalarPixelsToWorld(52/2);
+    float box2dW = box2d.scalarPixelsToWorld(w/2);
+    float box2dH = box2d.scalarPixelsToWorld(h/2);
     boxDef.setAsBox(box2dW,box2dH);
     boxFix.density = 1;
     boxFix.restitution = 0.5;

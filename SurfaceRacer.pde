@@ -51,7 +51,7 @@ void setup() {
   boundaries.add(new Boundary(width/2,5,width,10,0));
   boundaries.add(new Boundary(width/2,height-5,width,10,0));
   
-  Car car = new Car(100,100);
+  Car car = new Car(500,500,30,52);
   cars.add(car);
   CustomBoundary cs = new CustomBoundary("3:0/1,1/0,1/1");
   customBoundaries.add(cs);
