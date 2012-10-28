@@ -6,10 +6,14 @@
 // Basic example of falling rectangles
 
 import pbox2d.*;
+import org.jbox2d.common.*;
+import org.jbox2d.dynamics.joints.*;
 import org.jbox2d.collision.shapes.*;
+import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.common.*;
 import org.jbox2d.dynamics.*;
 import oscP5.*;
+import org.jbox2d.dynamics.contacts.*;
 
 OscP5 oscP5;
 // A reference to our box2d world
@@ -21,8 +25,12 @@ ArrayList<Boundary> boundaries;
 ArrayList<Car> cars;
 ArrayList<CustomBoundary> customBoundaries;
 int borderspresent = 0;
+
+float HORSEPOWERS = 100;
+float MAX_STEER_ANGLE = PI/3;
+
 void setup() {
-  size(1200,800);
+  size(displayWidth, displayHeight);
   smooth();
   oscP5 = new OscP5(this,57120);
   // Initialize box2d physics and create the world
@@ -40,8 +48,8 @@ void setup() {
   //boundaries.add(new Boundary(3*width/4,height-50,width/2-50,10,0));
   boundaries.add(new Boundary(width-5,height/2,10,height,0));
   boundaries.add(new Boundary(5,height/2,10,height,0));
-  boundaries.add(new Boundary(0,0,width,5,0));
-  //boundaries.add(new Boundary(5,height/2,10,height,1));
+  boundaries.add(new Boundary(width/2,5,width,10,0));
+  boundaries.add(new Boundary(width/2,height-5,width,10,0));
   
   Car car = new Car(100,100);
   cars.add(car);
@@ -60,11 +68,14 @@ void draw() {
   for (Boundary wall: boundaries) {
     wall.display();
   }
-
+  for (Car car: cars) {
+    car.update();
+  }
   // Display all the people
   for (Car car: cars) {
     car.display();
   }
+
     // Display all the people
   
   if (borderspresent==1){
@@ -83,11 +94,61 @@ void draw() {
   }*/
 }
 
+boolean sketchFullScreen() {
+  return true;
+}
+
+void keyPressed()
+{ 
+  Car currentCar = cars.get(0);
+  println(keyCode);
+  if(keyCode == 38){
+    println("UP");
+    currentCar.engineSpeed = HORSEPOWERS;
+  }
+  if(keyCode == 40){
+    println("DOWN");
+    currentCar.engineSpeed = -HORSEPOWERS;
+  }
+  if(keyCode == 39){
+    println("RIGHT");
+    currentCar.steeringAngle = -MAX_STEER_ANGLE;
+  }
+  if(keyCode == 37){
+    println("LEFT");
+    currentCar.steeringAngle = MAX_STEER_ANGLE;
+  }
+}
+ 
+void keyReleased()
+{ 
+  Car currentCar = cars.get(0);
+  println(keyCode);
+  if(keyCode == 38){
+    println("UP");
+    currentCar.engineSpeed = HORSEPOWERS;
+  }
+  if(keyCode == 40){
+    println("DOWN");
+    currentCar.engineSpeed = -HORSEPOWERS;
+  }
+  if(keyCode == 39){
+    println("RIGHT");
+    currentCar.steeringAngle = 0;
+  }
+  if(keyCode == 37){
+    println("LEFT");
+    currentCar.steeringAngle = 0;
+  }
+}
+
+
 void oscEvent(OscMessage theOscMessage) { 
    borderspresent = 0;
    println("Killing everybody...");
    for (int i = customBoundaries.size()-1; i > 0; i--) {
     println("KILL!!");
+   customBoundaries.get(i).killBody();
    customBoundaries.remove(i);
    } 
    println("Everybody DEAD!");
