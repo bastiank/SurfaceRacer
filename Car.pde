@@ -17,9 +17,11 @@ class Car {
     // Add the box to the box2d world
     makeBody(new Vec2(x, y),w,h);
     carwidth = int(w);
-     img=loadImage("BeastGTS-GTA1.png");
+     img=loadImage("Speeder-GTA1.png");
   }
-
+  float getSpeed(){
+    return  body.getLinearVelocity().length();
+  }
   // This function removes the particle from the box2d world
   void killBody() {
     box2d.destroyBody(body);
@@ -74,7 +76,7 @@ class Car {
 
   // Drawing the box
   void display() {
-    displayBody(body);
+    //displayBody(body);
     displayBody(rightWheel);
     displayBody(leftWheel);
     displayBody(rightRearWheel);
@@ -99,7 +101,7 @@ class Car {
     pushMatrix();
     translate(pos.x, pos.y);
     rotate(-a+PI/2);
-    print (str(carwidth/img.width));
+    scale (0.35);
     image(img,0-img.width/2,0-img.height/2);
    
     popMatrix();
@@ -119,7 +121,7 @@ class Car {
     pushMatrix();
     translate(pos.x, pos.y);
     rotate(-a);
-    fill(175);
+    fill(0);
     stroke(0);
     beginShape();
     //println(vertices.length);
