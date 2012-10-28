@@ -35,6 +35,7 @@ class Boundary {
     bd.type = BodyType.STATIC;
     bd.angle = a;
     bd.position.set(box2d.coordPixelsToWorld(x,y));
+    //bd.restitution = 0.5;
     b = box2d.createBody(bd);
     
     // Attached the shape to the body using a Fixture

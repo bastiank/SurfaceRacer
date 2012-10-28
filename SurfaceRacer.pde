@@ -19,7 +19,7 @@ ArrayList<Boundary> boundaries;
 ArrayList<Car> cars;
 
 void setup() {
-  size(640,360);
+  size(displayWidth, displayHeight);
   smooth();
 
   // Initialize box2d physics and create the world
@@ -37,8 +37,8 @@ void setup() {
   //boundaries.add(new Boundary(3*width/4,height-50,width/2-50,10,0));
   boundaries.add(new Boundary(width-5,height/2,10,height,0));
   boundaries.add(new Boundary(5,height/2,10,height,0));
-  boundaries.add(new Boundary(0,0,width,5,0));
-  //boundaries.add(new Boundary(5,height/2,10,height,1));
+  boundaries.add(new Boundary(width/2,5,width,10,0));
+  boundaries.add(new Boundary(width/2,height-5,width,10,0));
   
   Car car = new Car(100,100);
   cars.add(car);
@@ -70,10 +70,32 @@ void draw() {
   }*/
 }
 
+boolean sketchFullScreen() {
+  return true;
+}
+
+void keyPressed() {
+  if (key == 'w' ) 
+  {
+    cars.get(0).accelerate(5);
+  }
+  else if(key == 's'){
+    cars.get(0).accelerate(-5);
+  } 
+  else if(key == 'a'){
+    cars.get(0).turn(5);
+  } 
+  else if(key == 'd'){
+    cars.get(0).turn(-5);
+  } 
+
+}
 /*void mousePressed() {
   CustomShape cs = new CustomShape(mouseX,mouseY);
   polygons.add(cs);
 }*/
+
+
 
 
 
