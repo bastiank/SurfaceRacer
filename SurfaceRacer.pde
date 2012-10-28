@@ -30,7 +30,8 @@ float HORSEPOWERS = 400;
 float MAX_STEER_ANGLE = PI/3;
 
 void setup() {
-  size(displayWidth, displayHeight);
+  size(1920, 1080);
+  //size(500, 500);
   smooth();
   oscP5 = new OscP5(this,57120);
   // Initialize box2d physics and create the world
@@ -43,6 +44,15 @@ void setup() {
   cars = new ArrayList<Car>();
   boundaries = new ArrayList<Boundary>();
   customBoundaries = new ArrayList<CustomBoundary>();
+  /*for(int x = 0; x<= 500; x+=50){
+    for(int y = 0; y<= 500; y+=50){
+      customBoundaries.add(new CustomBoundary("4:"+(x-5)+"/"+(y-5)+","+(x+5)+"/"+(y-5)+","+(x+5)+"/"+(y+5)+","+(x-5)+"/"+(y+5)));
+    }
+  }*/
+  //customBoundaries.add(new CustomBoundary("4:0/0,960/0,960/540,0/540"));
+  
+  //customBoundaries.add(new CustomBoundary("4:100/100,100/200,200/200,200/100"));
+  //customBoundaries.add(new CustomBoundary("4:960/540,960/440,860/440,860/540"));
   // Add a bunch of fixed boundaries
   //boundaries.add(new Boundary(width/4,height-5,width/2-50,10,0));
   //boundaries.add(new Boundary(3*width/4,height-50,width/2-50,10,0));
@@ -166,11 +176,14 @@ void oscEvent(OscMessage theOscMessage) {
    print (customBoundaries);
    borderspresent = 1;
 }
-/*
+
 void mousePressed() {
-  CustomBoundary cs = new CustomBoundary("3:50/50,50/100,100/100");
-  customBoundaries.add(cs);
+  int x = (int)(mouseX/2);
+  int y = (int)(mouseY/2);
+  customBoundaries.add(new CustomBoundary("4:"+(x-5)+"/"+(y-5)+","+(x+5)+"/"+(y-5)+","+(x+5)+"/"+(y+5)+","+(x-5)+"/"+(y+5)));
+  //CustomBoundary cs = new CustomBoundary("3:50/50,50/100,100/100");
+  
+  //customBoundaries.add(cs);
 }
-*/
 
 

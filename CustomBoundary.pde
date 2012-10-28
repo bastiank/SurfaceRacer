@@ -80,7 +80,7 @@ class CustomBoundary {
       int[] myvertex = new int[2];
       myvertex = int(trim(vertexStrings[i].split("/")));
       //println(myvertex);
-      vertices[i] = box2d.vectorPixelsToWorld(new Vec2(myvertex[0],myvertex[1]));
+      vertices[i] = box2d.vectorPixelsToWorld(new Vec2(myvertex[0]*2,myvertex[1]*2));
     }
 
     sd.set(vertices, vertices.length);
@@ -88,7 +88,7 @@ class CustomBoundary {
     // Define the body and make it from the shape
     BodyDef bd = new BodyDef();
     bd.type = BodyType.STATIC;
-    bd.position.set(box2d.coordPixelsToWorld(vertices[0]));
+    bd.position.set(box2d.coordPixelsToWorld(0,0));
     body = box2d.createBody(bd);
 
     body.createFixture(sd, 1.0);
