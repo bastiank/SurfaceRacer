@@ -10,10 +10,14 @@ class Car {
   RevoluteJoint rightJoint;
   float engineSpeed = 0;
   float steeringAngle = 0;
+ PImage img;
+ int carwidth = 0;
   // Constructor
   Car(float x, float y, float w, float h) {
     // Add the box to the box2d world
     makeBody(new Vec2(x, y),w,h);
+    carwidth = int(w);
+     img=loadImage("BeastGTS-GTA1.png");
   }
 
   // This function removes the particle from the box2d world
@@ -75,8 +79,31 @@ class Car {
     displayBody(leftWheel);
     displayBody(rightRearWheel);
     displayBody(leftRearWheel);
+    displayCar(body);
   }
   
+  
+  
+  void displayCar(Body body){
+    // We look at each body and get its screen position
+    Vec2 pos = box2d.getBodyPixelCoord(body);
+    // Get its angle of rotation
+
+    float a = body.getAngle();
+    
+    Fixture f = body.getFixtureList();
+    PolygonShape ps = (PolygonShape) f.getShape();
+
+     
+    rectMode(CENTER);
+    pushMatrix();
+    translate(pos.x, pos.y);
+    rotate(-a+PI/2);
+    print (str(carwidth/img.width));
+    image(img,0-img.width/2,0-img.height/2);
+   
+    popMatrix();
+  }
   void displayBody(Body body){
     // We look at each body and get its screen position
     Vec2 pos = box2d.getBodyPixelCoord(body);
