@@ -14,7 +14,12 @@ import org.jbox2d.common.*;
 import org.jbox2d.dynamics.*;
 import oscP5.*;
 import org.jbox2d.dynamics.contacts.*;
+import ddf.minim.*;
+import ddf.minim.ugens.*;
 
+Minim       minim;
+AudioOutput out;
+Oscil       wave;
 OscP5 oscP5;
 // A reference to our box2d world
 PBox2D box2d;
@@ -25,14 +30,22 @@ ArrayList<Boundary> boundaries;
 ArrayList<Car> cars;
 ArrayList<CustomBoundary> customBoundaries;
 int borderspresent = 0;
-
+PImage bg;
 float HORSEPOWERS = 400;
 float MAX_STEER_ANGLE = PI/3;
 
 void setup() {
   size(1920, 1080);
-  //size(500, 500);
+  minim = new Minim(this);
+  
+  // use the getLineOut method of the Minim object to get an AudioOutput object
+  out = minim.getLineOut();
+  wave = new Oscil( 40, 0.3, Waves.SAW );
+  // patch the Oscil to the output
+  wave.patch( out );
+  //size(displayWidth, displayHeight);
   smooth();
+  bg = loadImage("120799-2560x1600.jpg");
   oscP5 = new OscP5(this,57120);
   // Initialize box2d physics and create the world
   box2d = new PBox2D(this);
@@ -61,7 +74,7 @@ void setup() {
   boundaries.add(new Boundary(width/2,5,width,10,0));
   boundaries.add(new Boundary(width/2,height-5,width,10,0));
   
-  Car car = new Car(100,100);
+  Car car = new Car(500,500,30,52);
   cars.add(car);
   CustomBoundary cs = new CustomBoundary("3:0/1,1/0,1/1");
   customBoundaries.add(cs);
@@ -69,8 +82,10 @@ void setup() {
 }
 
 void draw() {
-  background(255);
-
+  //background(255);
+background(bg);
+//println(cars.get(0).getSpeed());
+wave.setFrequency(40+(int(cars.get(0).getSpeed()*1.5)));
   // We must always step through time!
   box2d.step();
 

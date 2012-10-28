@@ -66,7 +66,7 @@ class CustomBoundary {
     String[] stringSegments = new String[2];
     stringSegments = bodystring.split(":");
     int numberOfVertices = int(stringSegments[0]);
-    println(str(numberOfVertices));
+    //println(str(numberOfVertices));
     String vertexString = stringSegments[1];
     String[] vertexStrings = new String[numberOfVertices];
     vertexStrings = trim(vertexString.split(","));
