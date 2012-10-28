@@ -12,7 +12,7 @@ class CustomBoundary {
   // Constructor
   CustomBoundary(String bodystring) {
     // Add the box to the box2d world
-    makeBody(new Vec2(50, 50));
+    makeBody(bodystring);
   }
 
   // This function removes the particle from the box2d world
@@ -61,23 +61,34 @@ class CustomBoundary {
   }
 
   // This function adds the rectangle to the box2d world
-  void makeBody(Vec2 center) {
-    
+  void makeBody(String bodystring) {
+   // int[] values = new int[7];
+    String[] stringSegments = new String[2];
+    stringSegments = bodystring.split(":");
+    int numberOfVertices = int(stringSegments[0]);
+    println(str(numberOfVertices));
+    String vertexString = stringSegments[1];
+    String[] vertexStrings = new String[numberOfVertices];
+    vertexStrings = trim(vertexString.split(","));
+    println(vertexStrings); 
     // Define a polygon (this is what we use for a rectangle)
     PolygonShape sd = new PolygonShape();
+    Vec2[] vertices = new Vec2[numberOfVertices];
 
-    Vec2[] vertices = new Vec2[4];
-    vertices[0] = box2d.vectorPixelsToWorld(new Vec2(-15, 25));
-    vertices[1] = box2d.vectorPixelsToWorld(new Vec2(15, 0));
-    vertices[2] = box2d.vectorPixelsToWorld(new Vec2(20, -15));
-    vertices[3] = box2d.vectorPixelsToWorld(new Vec2(-10, -10));
+
+    for(int i = 0; i < numberOfVertices; i++){
+      int[] myvertex = new int[2];
+      myvertex = int(trim(vertexStrings[i].split("/")));
+      println(myvertex);
+      vertices[i] = box2d.vectorPixelsToWorld(new Vec2(myvertex[0],myvertex[1]));
+    }
 
     sd.set(vertices, vertices.length);
 
     // Define the body and make it from the shape
     BodyDef bd = new BodyDef();
     bd.type = BodyType.STATIC;
-    bd.position.set(box2d.coordPixelsToWorld(center));
+    bd.position.set(box2d.coordPixelsToWorld(vertices[0]));
     body = box2d.createBody(bd);
 
     body.createFixture(sd, 1.0);
