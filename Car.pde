@@ -12,7 +12,7 @@ class Car {
   float steeringAngle = 0;
   
   float HORSEPOWERS = 800;
-  float MAX_STEER_ANGLE = PI/4;
+  float MAX_STEER_ANGLE = PI/3;
   
   boolean accelerating = false;
   boolean decelerating = false;
@@ -62,14 +62,14 @@ class Car {
     //println("speed: " + str(engineSpeed) + " / steering: " + str(steeringAngle));
     
     if(accelerating && engineSpeed < HORSEPOWERS)
-      engineSpeed += 10;
+      engineSpeed += 100;
     else if(!accelerating && engineSpeed > 0)
-      engineSpeed -= 5;
+      engineSpeed -= 30;
       
     if(decelerating && engineSpeed > -HORSEPOWERS/2)
-      engineSpeed -= 20;
+      engineSpeed -= 50;
     else if(!decelerating && engineSpeed < 0)
-      engineSpeed += 10;
+      engineSpeed += 30;
 
     if(turnleft && steeringAngle < (MAX_STEER_ANGLE))
       //println("left");
@@ -89,6 +89,7 @@ class Car {
     killOrthogonalVelocity(rightWheel);
     killOrthogonalVelocity(leftRearWheel);
     killOrthogonalVelocity(rightRearWheel);
+    killOrthogonalVelocity(body);
     float STEER_SPEED = 1.5; 
     
     Vec2 ldirection = getDirectionVectorFromBody(leftWheel);
