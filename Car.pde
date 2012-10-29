@@ -12,7 +12,7 @@ class Car {
   float steeringAngle = 0;
   
   float HORSEPOWERS = 800;
-  float MAX_STEER_ANGLE = PI/2;
+  float MAX_STEER_ANGLE = PI/4;
   
   boolean accelerating = false;
   boolean decelerating = false;

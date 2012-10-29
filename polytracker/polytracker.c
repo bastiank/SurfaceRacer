@@ -136,7 +136,7 @@ int findSquares4( IplImage* img, CvMemStorage* storage )
 
 	printf("----------------------\n");
 
-	cvShowImage( "Polygons", gray2 );
+	//cvShowImage( "Polygons", gray2 );
 
     // release all the temporary images
     cvReleaseImage( &gray );
@@ -158,11 +158,11 @@ int main(int argc, char* argv[]) {
 	uint8_t surface_img[VIDEO_BUFFER_SIZE]; //518400
 
 	// create a window
-	cvNamedWindow("Black/White", CV_WINDOW_AUTOSIZE); 
-	cvMoveWindow("Black/White", 100, 100);
+	//cvNamedWindow("Black/White", CV_WINDOW_AUTOSIZE); 
+	//cvMoveWindow("Black/White", 100, 100);
 
-	cvNamedWindow("Polygons", CV_WINDOW_AUTOSIZE); 
-	cvMoveWindow("Polygons", 1100, 100);
+	//cvNamedWindow("Polygons", CV_WINDOW_AUTOSIZE); 
+	//cvMoveWindow("Polygons", 1100, 100);
 
 	IplImage* img_gray = cvCreateImage(cvSize(960,540),IPL_DEPTH_8U,1);
 	IplImage* img_bw = cvCreateImage(cvGetSize(img_gray),IPL_DEPTH_8U,1);
@@ -178,7 +178,7 @@ int main(int argc, char* argv[]) {
 		storage = cvCreateMemStorage(0);
 		img = cvCloneImage( img_bw );
 
-	    cvShowImage( "Black/White", img );
+	    //cvShowImage( "Black/White", img );
 
 		findSquares4( img, storage );
 
