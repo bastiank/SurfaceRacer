@@ -11,8 +11,8 @@ class Car {
   float engineSpeed = 0;
   float steeringAngle = 0;
   
-  float HORSEPOWERS = 800;
-  float MAX_STEER_ANGLE = PI/3;
+  float HORSEPOWERS = 400;
+  float MAX_STEER_ANGLE = PI/5;
   
   boolean accelerating = false;
   boolean decelerating = false;
@@ -57,40 +57,45 @@ class Car {
     return (new Vec2((float)(x/lv.length()),(float)(y/lv.length())));   
   }
   
-  void update(){
+  void update(float frame_render_time){
     
     //println("speed: " + str(engineSpeed) + " / steering: " + str(steeringAngle));
     
     if(accelerating && engineSpeed < HORSEPOWERS)
-      engineSpeed += 100;
+      engineSpeed += 600*frame_render_time;
     else if(!accelerating && engineSpeed > 0)
-      engineSpeed -= 30;
+      engineSpeed = 0;
       
     if(decelerating && engineSpeed > -HORSEPOWERS/2)
-      engineSpeed -= 50;
+      engineSpeed -= 300*frame_render_time;
     else if(!decelerating && engineSpeed < 0)
-      engineSpeed += 30;
+      engineSpeed = 0;
 
     if(turnleft && steeringAngle < (MAX_STEER_ANGLE))
       //println("left");
-      steeringAngle += (PI/20);
+      steeringAngle += (PI/20)*frame_render_time*6;
     else if(!turnleft && !turnright)
       //println("leftstop");
       steeringAngle = 0;
-      
+        
     if(turnright && steeringAngle > -(MAX_STEER_ANGLE))
       //println("right");
-      steeringAngle -= (PI/20);
+      steeringAngle -= (PI/20)*frame_render_time*6;
     else if(!turnright && !turnleft)
       //println("rightstop");
       steeringAngle = 0;
+    
+    if(steeringAngle != 0){
+      engineSpeed -= engineSpeed * Math.abs(steeringAngle)/5;  //decrese speed while steering
+      //println(Math.abs(steeringAngle));
+    }
     
     killOrthogonalVelocity(leftWheel);
     killOrthogonalVelocity(rightWheel);
     killOrthogonalVelocity(leftRearWheel);
     killOrthogonalVelocity(rightRearWheel);
     killOrthogonalVelocity(body);
-    float STEER_SPEED = 1.5; 
+    float STEER_SPEED = 25; 
     
     Vec2 ldirection = getDirectionVectorFromBody(leftWheel);
     Vec2 rdirection = getDirectionVectorFromBody(rightWheel);
@@ -100,7 +105,7 @@ class Car {
     //Steering
     float mspeed = steeringAngle - leftJoint.getJointAngle();
     leftJoint.setMotorSpeed(mspeed * STEER_SPEED);
-    //float mspeed = steeringAngle - rightJoint.getJointAngle();
+    mspeed = steeringAngle - rightJoint.getJointAngle();
     rightJoint.setMotorSpeed(mspeed * STEER_SPEED);
   }
   

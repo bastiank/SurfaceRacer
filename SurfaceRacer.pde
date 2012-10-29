@@ -31,18 +31,20 @@ ArrayList<Car> cars;
 ArrayList<CustomBoundary> customBoundaries;
 int borderspresent = 0;
 PImage bg;
+PFont font;
 
 void setup() {
   size(1920, 1080);
+  //size(displayWidth, displayHeight);
   minim = new Minim(this);
-  
+  font = createFont("Arial Bold",48);
   // use the getLineOut method of the Minim object to get an AudioOutput object
   out = minim.getLineOut();
   wave = new Oscil( 40, 0.1, Waves.SAW );
   // patch the Oscil to the output
   wave.patch( out );
   //size(displayWidth, displayHeight);
-  //smooth();
+  smooth();
   bg = loadImage("120799-2560x1600.jpg");
   oscP5 = new OscP5(this,57120);
   // Initialize box2d physics and create the world
@@ -82,41 +84,37 @@ void setup() {
 }
 
 synchronized void draw() {
- // background(5);
+  //background(255);
+ 
 background(bg);
 //println(cars.get(0).getSpeed());
 wave.setFrequency(40+(int(cars.get(0).getSpeed()*1.5)));
   // We must always step through time!
-  box2d.step();
+  
+  float frame_render_time = 1/frameRate;
+  
+  box2d.world.step(frame_render_time,(int)(frame_render_time*120),(int)(frame_render_time*120));
 
   // Display all the boundaries
   for (Boundary wall: boundaries) {
     wall.display();
   }
   for (Car car: cars) {
-    car.update();
+    car.update(frame_render_time);
   }
   // Display all the people
   for (Car car: cars) {
     car.display();
   }
 
-    // Display all the people
-  
-  /*if (borderspresent==1){
-  for (CustomBoundary customBoundary: customBoundaries) {
-    customBoundary.display();
-    
-  }
-  }*/
-  // people that leave the screen, we delete them
-  // (note they have to be deleted from both the box2d world and our list
-  /*for (int i = cars.size()-1; i >= 0; i--) {
-    Car car = cars.get(i);
-    if (cs.done()) {
-      polygons.remove(i);
-    }
-  }*/
+   // oversampled fonts tend to look better
+  textFont(font,12);
+  // white float frameRate
+  //fill(0);
+  //text(frameRate,20,20);
+  // gray int frameRate display:
+  //fill(100);
+  text(int(frameRate),20,30);
 }
 
 boolean sketchFullScreen() {
