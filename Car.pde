@@ -10,10 +10,21 @@ class Car {
   RevoluteJoint rightJoint;
   float engineSpeed = 0;
   float steeringAngle = 0;
+  
+  float HORSEPOWERS = 800;
+  float MAX_STEER_ANGLE = PI/2;
+  
+  boolean accelerating = false;
+  boolean decelerating = false;
+  boolean turnleft = false;
+  boolean turnright = false;
+  
+  
+  
  PImage img;
  int carwidth = 0;
   // Constructor
-  Car(float x, float y, float w, float h, int styleVariant) {
+  Car(float x, float y, float orientation, float w, float h, int styleVariant) {
     // Add the box to the box2d world
     makeBody(new Vec2(x, y),w,h);
     carwidth = int(w);
@@ -47,6 +58,33 @@ class Car {
   }
   
   void update(){
+    
+    //println("speed: " + str(engineSpeed) + " / steering: " + str(steeringAngle));
+    
+    if(accelerating && engineSpeed < HORSEPOWERS)
+      engineSpeed += 10;
+    else if(!accelerating && engineSpeed > 0)
+      engineSpeed -= 5;
+      
+    if(decelerating && engineSpeed > -HORSEPOWERS/2)
+      engineSpeed -= 20;
+    else if(!decelerating && engineSpeed < 0)
+      engineSpeed += 10;
+
+    if(turnleft && steeringAngle < (MAX_STEER_ANGLE))
+      //println("left");
+      steeringAngle += (PI/20);
+    else if(!turnleft && !turnright)
+      //println("leftstop");
+      steeringAngle = 0;
+      
+    if(turnright && steeringAngle > -(MAX_STEER_ANGLE))
+      //println("right");
+      steeringAngle -= (PI/20);
+    else if(!turnright && !turnleft)
+      //println("rightstop");
+      steeringAngle = 0;
+    
     killOrthogonalVelocity(leftWheel);
     killOrthogonalVelocity(rightWheel);
     killOrthogonalVelocity(leftRearWheel);

@@ -35,7 +35,7 @@ using namespace std;
 #define ADDRESS "127.0.0.1"
 #define PORT 57120
 
-#define OUTPUT_BUFFER_SIZE 1024
+#define OUTPUT_BUFFER_SIZE 4096
 
 
 
@@ -186,7 +186,7 @@ int main(int argc, char* argv[]) {
 		cvReleaseImage( &img );
 
 		// wait for a key
-		int key = cvWaitKey(500);
+		int key = cvWaitKey(1000);
 		if(key == 113) {
 			usb_close( s40 );
 			return 0;

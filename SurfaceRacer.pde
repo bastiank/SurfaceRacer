@@ -31,8 +31,6 @@ ArrayList<Car> cars;
 ArrayList<CustomBoundary> customBoundaries;
 int borderspresent = 0;
 PImage bg;
-float HORSEPOWERS = 800;
-float MAX_STEER_ANGLE = PI/3;
 
 void setup() {
   size(1920, 1080);
@@ -74,8 +72,8 @@ void setup() {
   boundaries.add(new Boundary(width/2,5,width,10,0));
   boundaries.add(new Boundary(width/2,height-5,width,10,0));
   
-  Car car = new Car(500,500,30,52,6);
-  Car car1 = new Car(500,500,30,52,1);
+  Car car = new Car(500,500,0,30,52,6);
+  Car car1 = new Car(600,600,0,30,52,1);
   cars.add(car);
   cars.add(car1);
   CustomBoundary cs = new CustomBoundary("3:0/1,1/0,1/1");
@@ -105,12 +103,12 @@ wave.setFrequency(40+(int(cars.get(0).getSpeed()*1.5)));
 
     // Display all the people
   
-  if (borderspresent==1){
+  /*if (borderspresent==1){
   for (CustomBoundary customBoundary: customBoundaries) {
     customBoundary.display();
     
   }
-  }
+  }*/
   // people that leave the screen, we delete them
   // (note they have to be deleted from both the box2d world and our list
   /*for (int i = cars.size()-1; i >= 0; i--) {
@@ -128,92 +126,60 @@ boolean sketchFullScreen() {
 void keyPressed()
 { 
   //Car currentCar = cars.get(0);
-  println(keyCode);
+  //println(keyCode);
   if(keyCode == 38){
-    println("UP");
-    //currentCar.engineSpeed = HORSEPOWERS;
-    cars.get(0).engineSpeed = HORSEPOWERS;
+    cars.get(0).accelerating = true;
   }
   if(keyCode == 40){
-    println("DOWN");
-    //currentCar.engineSpeed = -HORSEPOWERS;
-    cars.get(0).engineSpeed = -HORSEPOWERS;
+    cars.get(0).decelerating = true;
   }
   if(keyCode == 39){
-    println("RIGHT");
-    //currentCar.steeringAngle = -MAX_STEER_ANGLE;
-    cars.get(0).steeringAngle = -MAX_STEER_ANGLE;
+    cars.get(0).turnright = true;
   }
   if(keyCode == 37){
-    println("LEFT");
-    //currentCar.steeringAngle = MAX_STEER_ANGLE;
-    cars.get(0).steeringAngle = MAX_STEER_ANGLE;
+    cars.get(0).turnleft = true;
   }
-    if(keyCode == 87){
-    println("UP");
-    //currentCar.engineSpeed = HORSEPOWERS;
-    cars.get(1).engineSpeed = HORSEPOWERS;
+  if(keyCode == 87){
+    cars.get(1).accelerating = true;
   }
   if(keyCode == 83){
-    println("DOWN");
-    //currentCar.engineSpeed = -HORSEPOWERS;
-    cars.get(1).engineSpeed = -HORSEPOWERS;
+    cars.get(1).decelerating = true;
   }
   if(keyCode == 68){
-    println("RIGHT");
-    //currentCar.steeringAngle = -MAX_STEER_ANGLE;
-    cars.get(1).steeringAngle = -MAX_STEER_ANGLE;
+    cars.get(1).turnright = true;
   }
   if(keyCode == 65){
-    println("LEFT");
-    //currentCwsar.steeringAngle = MAX_STEER_ANGLE;
-    cars.get(1).steeringAngle = MAX_STEER_ANGLE;
+    cars.get(1).turnleft = true;
   }
 }
 
 void keyReleased()
 { 
-  Car currentCar = cars.get(0);
-  println(keyCode);
+  //Car currentCar = cars.get(0);
+  //println(keyCode);
   if(keyCode == 38){
-    println("UP");
-    //currentCar.engineSpeed = HORSEPOWERS;
-    cars.get(0).engineSpeed = HORSEPOWERS;
+    cars.get(0).accelerating = false;
   }
   if(keyCode == 40){
-    println("DOWN");
-    //currentCar.engineSpeed = -HORSEPOWERS;
-    cars.get(0).engineSpeed = -HORSEPOWERS;
+    cars.get(0).decelerating = false;
   }
   if(keyCode == 39){
-    println("RIGHT");
-    //currentCar.steeringAngle = -MAX_STEER_ANGLE;
-    cars.get(0).steeringAngle = 0;
+    cars.get(0).turnright = false;
   }
   if(keyCode == 37){
-    println("LEFT");
-    //currentCar.steeringAngle = MAX_STEER_ANGLE;
-    cars.get(0).steeringAngle = 0;
+    cars.get(0).turnleft = false;
   }
-    if(keyCode == 87){
-    println("UP");
-    //currentCar.engineSpeed = HORSEPOWERS;
-    cars.get(1).engineSpeed = HORSEPOWERS;
+  if(keyCode == 87){
+    cars.get(1).accelerating = false;
   }
   if(keyCode == 83){
-    println("DOWN");
-    //currentCar.engineSpeed = -HORSEPOWERS;
-    cars.get(1).engineSpeed = -HORSEPOWERS;
+    cars.get(1).decelerating = false;
   }
   if(keyCode == 68){
-    println("RIGHT");
-    //currentCar.steeringAngle = -MAX_STEER_ANGLE;
-    cars.get(1).steeringAngle = 0;
+    cars.get(1).turnright = false;
   }
   if(keyCode == 65){
-    println("LEFT");
-    //currentCar.steeringAngle = MAX_STEER_ANGLE;
-    cars.get(1).steeringAngle = 0;
+    cars.get(1).turnleft = false;
   }
 }
 

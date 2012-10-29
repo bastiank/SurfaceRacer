@@ -103,12 +103,12 @@ int findSquares4( IplImage* img, CvMemStorage* storage )
 			outStream << result->total << ":";
 
 			printf("%u %u   ", firstp->x, firstp->y);
-			outStream << firstp->x*2 << "/" << firstp->y*2 << ",";
+			outStream << firstp->x << "/" << firstp->y << ",";
 
 			for(int iii=1; iii<result->total; iii++) {
 				CvPoint* p = (CvPoint*)cvGetSeqElem( result, iii );
 				printf("%u %u   ", p->x, p->y);
-				outStream << p->x*2 << "/" << p->y*2 << ",";
+				outStream << p->x << "/" << p->y << ",";
 
 				if(iii>1) {
 					cvLine(gray2, cvPoint(lastp->x, lastp->y), cvPoint(p->x, p->y), cvScalar(100,100,100), 1);
@@ -186,7 +186,7 @@ int main(int argc, char* argv[]) {
 		cvReleaseImage( &img );
 
 		// wait for a key
-		int key = cvWaitKey(0);
+		int key = cvWaitKey(500);
 		if(key == 113) {
 			usb_close( s40 );
 			return 0;
