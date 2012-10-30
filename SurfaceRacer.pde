@@ -27,6 +27,8 @@ OscP5 oscP5;
 // A reference to our box2d world
 PBox2D box2d;
 
+boolean muted = true;
+
 // A list we'll use to track fixed objects
 ArrayList<Boundary> boundaries;
 // A list for all of our rectanglesd
@@ -55,8 +57,8 @@ void setup() {
   textFont (createFont("Arial Bold",80));
   // use the getLineOut method of the Minim object to get an AudioOutput object
   out = minim.getLineOut();
-  wave = new Oscil( 40, 0.1, Waves.SAW );
-  wave1 = new Oscil( 40, 0.1, Waves.SAW );
+  wave = new Oscil( 40, 0, Waves.SAW );
+  wave1 = new Oscil( 40, 0, Waves.SAW );
   // patch the Oscil to the output
   wave.patch( out );
   wave1.patch( out );
@@ -163,8 +165,10 @@ synchronized void draw() {
       animationCounter1 = 0;
       animationCounter2 = 0;
       animationCounter3 = 0;
-      wave.setAmplitude(0.1);
-      wave1.setAmplitude(0.1);
+      if(!muted){
+        wave.setAmplitude(0.1);
+        wave1.setAmplitude(0.1);
+      }
       for(Car car: cars) {
         car.reset();
         resetControls(0);
@@ -309,6 +313,18 @@ void keyReleased()
     if(keyCode == 65){
       cars.get(1).turnleft = false;
     }
+    if(key == 'm' && !muted){
+      wave.setAmplitude(0.0);
+      wave1.setAmplitude(0.0);
+      println("Muted");
+      muted = true;  
+    }else if(key == 'm' && muted){
+      wave.setAmplitude(0.1);
+      wave1.setAmplitude(0.1); 
+     println("Unmuted"); 
+      muted = false;
+    }
+    
     //reset cars
     if(keyCode == 49){
       cars.get(0).reset();
@@ -355,9 +371,9 @@ synchronized void oscEvent(OscMessage theOscMessage) {
 void mousePressed() {
   int x = (int)(mouseX/2);
   int y = (int)(mouseY/2);
-  customBoundaries.add(new CustomBoundary("4:"+(x-5)+"/"+(y-5)+","+(x+5)+"/"+(y-5)+","+(x+5)+"/"+(y+5)+","+(x-5)+"/"+(y+5)));
+//  customBoundaries.add(new CustomBoundary("4:"+(x-5)+"/"+(y-5)+","+(x+5)+"/"+(y-5)+","+(x+5)+"/"+(y+5)+","+(x-5)+"/"+(y+5)));
   //CustomBoundary cs = new CustomBoundary("3:50/50,50/100,100/100");
-  
+  goalPosition =new Vec2(mouseX-50,mouseY-50);
   //customBoundaries.add(cs);
 }
 

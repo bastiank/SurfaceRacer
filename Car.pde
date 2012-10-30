@@ -12,7 +12,7 @@ class Car {
   float steeringAngle = 0;
   
   float HORSEPOWERS = 400;
-  float MAX_STEER_ANGLE = PI/5;
+  float MAX_STEER_ANGLE = PI/7;
   
   boolean accelerating = false;
   boolean decelerating = false;
@@ -56,6 +56,10 @@ class Car {
   // This function removes the particle from the box2d world
   void killBody() {
     box2d.destroyBody(body);
+    box2d.destroyBody(leftWheel);
+    box2d.destroyBody(rightWheel);
+    box2d.destroyBody(leftRearWheel);
+    box2d.destroyBody(rightRearWheel);
   }
   
   Vec2 getDirectionVectorFromBody(Body b){
@@ -79,14 +83,14 @@ class Car {
     float max_speed = HORSEPOWERS;
      if(turnleft && steeringAngle < (MAX_STEER_ANGLE))
       //println("left");
-      steeringAngle += (PI/20)*frame_render_time*6;
+      steeringAngle += (PI/5)*frame_render_time*6;
     else if(!turnleft && !turnright)
       //println("leftstop");
       steeringAngle = 0;
         
     if(turnright && steeringAngle > -(MAX_STEER_ANGLE))
       //println("right");
-      steeringAngle -= (PI/20)*frame_render_time*6;
+      steeringAngle -= (PI/5)*frame_render_time*6;
     else if(!turnright && !turnleft)
       //println("rightstop");
       steeringAngle = 0;
