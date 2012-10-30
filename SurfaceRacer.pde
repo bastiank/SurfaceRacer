@@ -45,7 +45,9 @@ int winner = 0;
 PFont font;
 
 void setup() {
-  size(1920, 1080);
+ size(1920, 1080);
+  noStroke();
+  smooth();
   //size(displayWidth, displayHeight);
   minim = new Minim(this);
   //minim2 = new Minim(this);
