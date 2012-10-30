@@ -61,17 +61,8 @@ class Car {
     
     //println("speed: " + str(engineSpeed) + " / steering: " + str(steeringAngle));
     
-    if(accelerating && engineSpeed < HORSEPOWERS)
-      engineSpeed += 600*frame_render_time;
-    else if(!accelerating && engineSpeed > 0)
-      engineSpeed = 0;
-      
-    if(decelerating && engineSpeed > -HORSEPOWERS/2)
-      engineSpeed -= 300*frame_render_time;
-    else if(!decelerating && engineSpeed < 0)
-      engineSpeed = 0;
-
-    if(turnleft && steeringAngle < (MAX_STEER_ANGLE))
+    float max_speed = HORSEPOWERS;
+     if(turnleft && steeringAngle < (MAX_STEER_ANGLE))
       //println("left");
       steeringAngle += (PI/20)*frame_render_time*6;
     else if(!turnleft && !turnright)
@@ -85,10 +76,26 @@ class Car {
       //println("rightstop");
       steeringAngle = 0;
     
+   
+    
+    if(accelerating && engineSpeed < max_speed)
+      engineSpeed += 600*frame_render_time;
+    else if(!accelerating && engineSpeed > 0)
+      engineSpeed = 0;
+      
+    if(decelerating && engineSpeed > -max_speed/2)
+      engineSpeed -= 300*frame_render_time;
+    else if(!decelerating && engineSpeed < 0)
+      engineSpeed = 0;
+
+   
     if(steeringAngle != 0){
       engineSpeed -= engineSpeed * Math.abs(steeringAngle)/5;  //decrese speed while steering
       //println(Math.abs(steeringAngle));
+      //max_speed *= 0.2;
+      //engineSpeed -= engineSpeed * 0.8;//Math.abs(steeringAngle)/5;  //decrese speed while steering
     }
+   
     
     killOrthogonalVelocity(leftWheel);
     killOrthogonalVelocity(rightWheel);

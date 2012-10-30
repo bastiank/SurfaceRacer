@@ -34,7 +34,9 @@ PImage bg;
 PFont font;
 
 void setup() {
-  size(1920, 1080);
+ size(1920, 1080);
+  noStroke();
+  smooth();
   //size(displayWidth, displayHeight);
   minim = new Minim(this);
   font = createFont("Arial Bold",48);
