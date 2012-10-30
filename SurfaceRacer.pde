@@ -18,6 +18,8 @@ import ddf.minim.*;
 import ddf.minim.ugens.*;
 
 Minim       minim;
+//Minim       minim2;
+//AudioPlayer player;
 AudioOutput out;
 Oscil       wave;
 Oscil       wave1;
@@ -33,16 +35,22 @@ ArrayList<CustomBoundary> customBoundaries;
 int borderspresent = 0;
 PImage bg;
 PImage goal;
-Vec2 goalPosition =new Vec2(1760,100);
+Vec2 goalPosition =new Vec2(1760,100);//7
 Boolean won = false;
-int scaler = 1;
+int animationState = 0;
+int animationCounter1 = 0;
+int animationCounter2 = 0;
+int animationCounter3 = 0;
+int winner = 0;
 PFont font;
 
 void setup() {
   size(1920, 1080);
   //size(displayWidth, displayHeight);
   minim = new Minim(this);
-  font = createFont("Arial Bold",48);
+  //minim2 = new Minim(this);
+  //player = minim2.loadFile ("win.wav");
+  textFont (createFont("Arial Bold",80));
   // use the getLineOut method of the Minim object to get an AudioOutput object
   out = minim.getLineOut();
   wave = new Oscil( 40, 0.1, Waves.SAW );
@@ -95,10 +103,74 @@ void setup() {
 }
 
 synchronized void draw() {
-  //background(255);
- 
-background(bg);
-
+  if(won){
+    if (animationState == 0){
+      background(bg);
+      fill(0,animationCounter1); // use black with alpha 10
+      rectMode(CORNER);
+      rect(0,0,width,height);
+      pushMatrix();
+        translate(goalPosition.x,goalPosition.y);
+        scale (.35);
+        translate(goal.width/2, goal.height/2);
+        rotate(animationCounter1/80.0*PI);
+        image(goal,-goal.width/2, -goal.height/2);
+      popMatrix();
+      animationCounter1 = animationCounter1 + 20;
+      if(animationCounter1 > 255){
+        //player.play ();
+        background(0);
+        animationState = 1;
+      }
+    }
+    if (animationState == 1){
+      if(goalPosition.x  > width/2){ 
+        textAlign(RIGHT);
+        fill(255);
+        text("PLAYER "+str(winner)+" WINS!",goalPosition.x-20,goalPosition.y+75);
+        fill(0,255-animationCounter2); // use black with alpha 10
+        rectMode(CORNER);
+        rect(goalPosition.x-1000,goalPosition.y,goalPosition.x,goalPosition.y+200);
+      }
+      else{
+        textAlign(LEFT);
+        fill(255);
+        text("PLAYER "+str(winner)+" WINS!",goalPosition.x+130,goalPosition.y+75);
+        fill(0,255-animationCounter2); // use black with alpha 10
+        rectMode(CORNER);
+        rect(goalPosition.x+1000,goalPosition.y,goalPosition.x,goalPosition.y+200); 
+      }
+      pushMatrix();
+        translate(goalPosition.x,goalPosition.y);
+        scale (.35);
+        translate(goal.width/2, goal.height/2);
+        rotate(animationCounter1/80.0*PI);
+        image(goal,-goal.width/2, -goal.height/2);
+      popMatrix();
+      animationCounter2 = animationCounter2 + 10;
+      if(animationCounter2 > 255){
+        animationState = 3;
+      }
+    }
+    if (animationState == 3){
+    
+    }  
+    if (animationState == 4){
+      won = false;
+      animationState = 0;
+      animationCounter1 = 0;
+      animationCounter2 = 0;
+      animationCounter3 = 0;
+      wave.setAmplitude(0.1);
+      wave1.setAmplitude(0.1);
+      for(Car car: cars) {
+        car.reset();
+        resetControls(0);
+        resetControls(1);
+      }
+    }
+  }else{
+    background(bg);
     pushMatrix();
     translate(goalPosition.x,goalPosition.y);
     scale (0.35);
@@ -126,28 +198,16 @@ wave1.setFrequency(40+(int(cars.get(1).getSpeed()*1.5)));
   }
   
   for (int cc=0; cc<cars.size(); cc++) {
-    float d = sqrt(pow(cars.get(cc).getPosition().x-goalPosition.x,2) + pow(cars.get(cc).getPosition().y-goalPosition.y,2));
-    if(d < 50) {
+    float d = sqrt(pow(cars.get(cc).getPosition().x-(goalPosition.x+50),2) + pow(cars.get(cc).getPosition().y-(goalPosition.y+50),2));
+    if(d < 30) {
       //cars.get(cc).reset();
       win(cc);
+      wave.setAmplitude(0.0);
+      wave1.setAmplitude(0.0);
     }
-  if(won){
-    pushMatrix();
-    translate(goalPosition.x,goalPosition.y);
-    scale (scaler);
-    translate(-goal.width/2, -goal.height/2);
-    image(goal,0,0);
-    popMatrix();
-    scaler ++;
-    if(scaler > 20){
-      won = false;
-      for(Car car: cars) {
-        car.reset();
-        resetControls(0);
-        resetControls(1);
-      }
-    }
+  
   }
+  
   }
     // Display all the cars
   
@@ -161,17 +221,18 @@ wave1.setFrequency(40+(int(cars.get(1).getSpeed()*1.5)));
   
 
    // oversampled fonts tend to look better
-  textFont(font,12);
+  //textFont(font,12);
   // white float frameRate
   //fill(0);
   //text(frameRate,20,20);
   // gray int frameRate display:
   //fill(100);
-  text(int(frameRate),20,30);
+  //text(int(frameRate),20,30);
 }
 
-void win(int carnumber) {
+void win(int carNumber) {
  won = true;
+ winner = carNumber+1;
 }
 
 boolean sketchFullScreen() {
@@ -183,30 +244,37 @@ void keyPressed()
   if (won == false){
   //Car currentCar = cars.get(0);
   //println(keyCode);
-  if(keyCode == 38){
-    cars.get(0).accelerating = true;
+    if(keyCode == 38){
+      cars.get(0).accelerating = true;
+    }
+    if(keyCode == 40){
+      cars.get(0).decelerating = true;
+    }
+    if(keyCode == 39){
+      cars.get(0).turnright = true;
+    }
+    if(keyCode == 37){
+      cars.get(0).turnleft = true;
+    }
+    if(keyCode == 87){
+      cars.get(1).accelerating = true;
+    }
+    if(keyCode == 83){
+      cars.get(1).decelerating = true;
+    }
+    if(keyCode == 68){
+      cars.get(1).turnright = true;
+    }
+    if(keyCode == 65){
+      cars.get(1).turnleft = true;
+    }
   }
-  if(keyCode == 40){
-    cars.get(0).decelerating = true;
-  }
-  if(keyCode == 39){
-    cars.get(0).turnright = true;
-  }
-  if(keyCode == 37){
-    cars.get(0).turnleft = true;
-  }
-  if(keyCode == 87){
-    cars.get(1).accelerating = true;
-  }
-  if(keyCode == 83){
-    cars.get(1).decelerating = true;
-  }
-  if(keyCode == 68){
-    cars.get(1).turnright = true;
-  }
-  if(keyCode == 65){
-    cars.get(1).turnleft = true;
-  }
+  else{
+    if(keyCode == 32){
+      if (animationState == 3){
+        animationState = 4;
+      }
+    }
   }
 }
 
@@ -215,39 +283,39 @@ void keyReleased()
   //Car currentCar = cars.get(0);
   //println(keyCode);
   if (won == false){
-  if(keyCode == 38){
-    cars.get(0).accelerating = false;
-  }
-  if(keyCode == 40){
-    cars.get(0).decelerating = false;
-  }
-  if(keyCode == 39){
-    cars.get(0).turnright = false;
-  }
-  if(keyCode == 37){
-    cars.get(0).turnleft = false;
-  }
-  if(keyCode == 87){
-    cars.get(1).accelerating = false;
-  }
-  if(keyCode == 83){
-    cars.get(1).decelerating = false;
-  }
-  if(keyCode == 68){
-    cars.get(1).turnright = false;
-  }
-  if(keyCode == 65){
-    cars.get(1).turnleft = false;
-  }
-  //reset cars
-  if(keyCode == 49){
-    cars.get(0).reset();
-    resetControls(0);
-  }
-  if(keyCode == 50){
-    cars.get(1).reset();
-    resetControls(1);
-  }
+    if(keyCode == 38){
+      cars.get(0).accelerating = false;
+    }
+    if(keyCode == 40){
+      cars.get(0).decelerating = false;
+    }
+    if(keyCode == 39){
+      cars.get(0).turnright = false;
+    }
+    if(keyCode == 37){
+      cars.get(0).turnleft = false;
+    }
+    if(keyCode == 87){
+      cars.get(1).accelerating = false;
+    }
+    if(keyCode == 83){
+      cars.get(1).decelerating = false;
+    }
+    if(keyCode == 68){
+      cars.get(1).turnright = false;
+    }
+    if(keyCode == 65){
+      cars.get(1).turnleft = false;
+    }
+    //reset cars
+    if(keyCode == 49){
+      cars.get(0).reset();
+      resetControls(0);
+    }
+    if(keyCode == 50){
+      cars.get(1).reset();
+      resetControls(1);
+    }
   }
 }
 
