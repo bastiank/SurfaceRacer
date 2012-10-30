@@ -45,6 +45,7 @@ int animationCounter2 = 0;
 int animationCounter3 = 0;
 int winner = 0;
 PFont font;
+PFont fps_font;
 
 void setup() {
  size(1920, 1080);
@@ -54,7 +55,7 @@ void setup() {
   minim = new Minim(this);
   //minim2 = new Minim(this);
   //player = minim2.loadFile ("win.wav");
-  textFont (createFont("Arial Bold",80));
+
   // use the getLineOut method of the Minim object to get an AudioOutput object
   out = minim.getLineOut();
   wave = new Oscil( 40, 0, Waves.SAW );
@@ -131,6 +132,7 @@ synchronized void draw() {
       if(goalPosition.x  > width/2){ 
         textAlign(RIGHT);
         fill(255);
+          textFont (createFont("Arial Bold",80));
         text("PLAYER "+str(winner)+" WINS!",goalPosition.x-20,goalPosition.y+75);
         fill(0,255-animationCounter2); // use black with alpha 10
         rectMode(CORNER);
@@ -139,6 +141,7 @@ synchronized void draw() {
       else{
         textAlign(LEFT);
         fill(255);
+          textFont (createFont("Arial Bold",80));
         text("PLAYER "+str(winner)+" WINS!",goalPosition.x+130,goalPosition.y+75);
         fill(0,255-animationCounter2); // use black with alpha 10
         rectMode(CORNER);
@@ -228,12 +231,13 @@ wave1.setFrequency(40+(int(cars.get(1).getSpeed()*1.5)));
 
    // oversampled fonts tend to look better
   //textFont(font,12);
-  // white float frameRate
+  //white float frameRate
   //fill(0);
   //text(frameRate,20,20);
-  // gray int frameRate display:
+  //gray int frameRate display:
   //fill(100);
-  //text(int(frameRate),20,30);
+    textFont (createFont("Arial Bold",12));
+  text(int(frameRate),20,30);
 }
 
 void win(int carNumber) {
