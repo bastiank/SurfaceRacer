@@ -36,11 +36,13 @@ PImage goal;
 Vec2 goalPosition =new Vec2(1760,100);
 Boolean won = false;
 int scaler = 1;
+PFont font;
 
 void setup() {
   size(1920, 1080);
+  //size(displayWidth, displayHeight);
   minim = new Minim(this);
-  
+  font = createFont("Arial Bold",48);
   // use the getLineOut method of the Minim object to get an AudioOutput object
   out = minim.getLineOut();
   wave = new Oscil( 40, 0.1, Waves.SAW );
@@ -49,7 +51,7 @@ void setup() {
   wave.patch( out );
   wave1.patch( out );
   //size(displayWidth, displayHeight);
-  //smooth();
+  smooth();
   bg = loadImage("120799-2560x1600.jpg");
   goal=loadImage("goal.png");
   oscP5 = new OscP5(this,57120);
@@ -93,7 +95,8 @@ void setup() {
 }
 
 synchronized void draw() {
- // background(5);
+  //background(255);
+ 
 background(bg);
 
     pushMatrix();
@@ -105,14 +108,17 @@ background(bg);
 wave.setFrequency(40+(int(cars.get(0).getSpeed()*1.5)));
 wave1.setFrequency(40+(int(cars.get(1).getSpeed()*1.5)));
   // We must always step through time!
-  box2d.step();
+  
+  float frame_render_time = 1/frameRate;
+  
+  box2d.world.step(frame_render_time,(int)(frame_render_time*120),(int)(frame_render_time*120));
 
   // Display all the boundaries
   /*for (Boundary wall: boundaries) {
     wall.display();
   }*/
   for (Car car: cars) {
-    car.update();
+    car.update(frame_render_time);
   }
   // Display all the people
   for (Car car: cars) {
@@ -137,12 +143,13 @@ wave1.setFrequency(40+(int(cars.get(1).getSpeed()*1.5)));
       won = false;
       for(Car car: cars) {
         car.reset();
+        resetControls(0);
+        resetControls(1);
       }
     }
   }
   }
-
-    // Display all the people
+    // Display all the cars
   
   // Boundaries werden nicht mehr gezeichnet, sind ja echte Objekte vorhanden
   /*if (borderspresent==1){
@@ -152,14 +159,15 @@ wave1.setFrequency(40+(int(cars.get(1).getSpeed()*1.5)));
   }
   }*/
   
-  // people that leave the screen, we delete them
-  // (note they have to be deleted from both the box2d world and our list
-  /*for (int i = cars.size()-1; i >= 0; i--) {
-    Car car = cars.get(i);
-    if (cs.done()) {
-      polygons.remove(i);
-    }
-  }*/
+
+   // oversampled fonts tend to look better
+  textFont(font,12);
+  // white float frameRate
+  //fill(0);
+  //text(frameRate,20,20);
+  // gray int frameRate display:
+  //fill(100);
+  text(int(frameRate),20,30);
 }
 
 void win(int carnumber) {
@@ -234,23 +242,31 @@ void keyReleased()
   //reset cars
   if(keyCode == 49){
     cars.get(0).reset();
+    resetControls(0);
   }
   if(keyCode == 50){
     cars.get(1).reset();
+    resetControls(1);
   }
   }
 }
 
+void resetControls(int carnumber){
+    cars.get(carnumber).accelerating = false;
+    cars.get(carnumber).decelerating = false;
+    cars.get(carnumber).turnright = false;
+    cars.get(carnumber).turnleft = false; 
+}
 
 synchronized void oscEvent(OscMessage theOscMessage) { 
    borderspresent = 0;
-   println("Killing everybody...");
+//   println("Killing everybody...");
    for (int i = customBoundaries.size()-1; i > 0; i--) {
-    println("KILL!!");
+//    println("KILL!!");
    customBoundaries.get(i).killBody();
    customBoundaries.remove(i);
    } 
-   println("Everybody DEAD!");
+//   println("Everybody DEAD!");
       print (customBoundaries);
    int counter = 0;
    String i = "fg";
