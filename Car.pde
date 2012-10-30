@@ -23,11 +23,15 @@ class Car {
   
  PImage img;
  int carwidth = 0;
+ int carheight = 0;
+ Vec2 carStartPos;
   // Constructor
   Car(float x, float y, float orientation, float w, float h, int styleVariant) {
     // Add the box to the box2d world
     makeBody(new Vec2(x, y),w,h);
     carwidth = int(w);
+    carheight = int(h);
+    carStartPos = new Vec2(x, y);
     if (styleVariant==0) img=loadImage("BeastGTS-GTA1.png");
     if (styleVariant==1) img=loadImage("Bulldog-GTA1.png");
     if (styleVariant==2) img=loadImage("Cossie-GTA1.png");
@@ -35,6 +39,17 @@ class Car {
     if (styleVariant==4) img=loadImage("SquadCar-GTA1-LibertyCity.png");
     if (styleVariant>4)  img=loadImage("Taxi-GTA1-LibertyCity.png");
   }
+  
+  synchronized void reset() {
+    println("RESET");
+
+
+    killBody();
+    engineSpeed = 0;
+    steeringAngle = 0;
+    makeBody(carStartPos,carwidth,carheight);
+  }
+  
   float getSpeed(){
     return  body.getLinearVelocity().length();
   }
@@ -118,7 +133,7 @@ class Car {
   }
 
   // Drawing the box
-  void display() {
+  synchronized void display() {
     //displayBody(body);
     displayBody(rightWheel);
     displayBody(leftWheel);
@@ -175,6 +190,10 @@ class Car {
     }
     endShape(CLOSE);
     popMatrix();
+  }
+
+  Vec2 getPosition() {
+    return new Vec2(box2d.getBodyPixelCoord(body).x, box2d.getBodyPixelCoord(body).y);
   }
 
   // This function adds the rectangle to the box2d world

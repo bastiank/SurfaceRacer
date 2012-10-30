@@ -13,7 +13,7 @@ PP=$!
 /usr/bin/sudo wminput --config /home/surface/Downloads/SurfaceRacer/wiimote.conf --reconnect --wait &
 WPA=$!
 
-sleep 5
+sleep 15
 
 /usr/bin/sudo wminput --config /home/surface/Downloads/SurfaceRacer/wiimote2.conf --reconnect --wait &
 WPB=$!

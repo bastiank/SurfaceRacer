@@ -20,17 +20,22 @@ import ddf.minim.ugens.*;
 Minim       minim;
 AudioOutput out;
 Oscil       wave;
+Oscil       wave1;
 OscP5 oscP5;
 // A reference to our box2d world
 PBox2D box2d;
 
 // A list we'll use to track fixed objects
 ArrayList<Boundary> boundaries;
-// A list for all of our rectangles
+// A list for all of our rectanglesd
 ArrayList<Car> cars;
 ArrayList<CustomBoundary> customBoundaries;
 int borderspresent = 0;
 PImage bg;
+PImage goal;
+Vec2 goalPosition =new Vec2(1760,100);
+Boolean won = false;
+int scaler = 1;
 
 void setup() {
   size(1920, 1080);
@@ -39,11 +44,14 @@ void setup() {
   // use the getLineOut method of the Minim object to get an AudioOutput object
   out = minim.getLineOut();
   wave = new Oscil( 40, 0.1, Waves.SAW );
+  wave1 = new Oscil( 40, 0.1, Waves.SAW );
   // patch the Oscil to the output
   wave.patch( out );
+  wave1.patch( out );
   //size(displayWidth, displayHeight);
   //smooth();
   bg = loadImage("120799-2560x1600.jpg");
+  goal=loadImage("goal.png");
   oscP5 = new OscP5(this,57120);
   // Initialize box2d physics and create the world
   box2d = new PBox2D(this);
@@ -71,28 +79,38 @@ void setup() {
   boundaries.add(new Boundary(5,height/2,10,height,0));
   boundaries.add(new Boundary(width/2,5,width,10,0));
   boundaries.add(new Boundary(width/2,height-5,width,10,0));
-  
-  Car car = new Car(500,500,0,30,52,6);
-  Car car1 = new Car(600,600,0,30,52,1);
-  cars.add(car);
-  cars.add(car1);
-  CustomBoundary cs = new CustomBoundary("3:0/1,1/0,1/1");
-  customBoundaries.add(cs);
+  int carstyle1 = 0;
+  int carstyle2 = 0;
+  while(carstyle1 == carstyle2){
+  carstyle1 = int(random(6.));//*5);
+  carstyle2 = int(random(6.));//*5);
+  }
+  cars.add(new Car(960,960,0,30,52,carstyle1));
+  cars.add(new Car(960,960,0,30,52,carstyle2));
+  //CustomBoundary cs = new CustomBoundary("3:0/1,1/0,1/1");
+  //customBoundaries.add(cs);
   borderspresent = 1;
 }
 
 synchronized void draw() {
  // background(5);
 background(bg);
+
+    pushMatrix();
+    translate(goalPosition.x,goalPosition.y);
+    scale (0.35);
+    image(goal,0,0);
+    popMatrix();
 //println(cars.get(0).getSpeed());
 wave.setFrequency(40+(int(cars.get(0).getSpeed()*1.5)));
+wave1.setFrequency(40+(int(cars.get(1).getSpeed()*1.5)));
   // We must always step through time!
   box2d.step();
 
   // Display all the boundaries
-  for (Boundary wall: boundaries) {
+  /*for (Boundary wall: boundaries) {
     wall.display();
-  }
+  }*/
   for (Car car: cars) {
     car.update();
   }
@@ -100,15 +118,40 @@ wave.setFrequency(40+(int(cars.get(0).getSpeed()*1.5)));
   for (Car car: cars) {
     car.display();
   }
+  
+  for (int cc=0; cc<cars.size(); cc++) {
+    float d = sqrt(pow(cars.get(cc).getPosition().x-goalPosition.x,2) + pow(cars.get(cc).getPosition().y-goalPosition.y,2));
+    if(d < 50) {
+      //cars.get(cc).reset();
+      win(cc);
+    }
+  if(won){
+    pushMatrix();
+    translate(goalPosition.x,goalPosition.y);
+    scale (scaler);
+    translate(-goal.width/2, -goal.height/2);
+    image(goal,0,0);
+    popMatrix();
+    scaler ++;
+    if(scaler > 20){
+      won = false;
+      for(Car car: cars) {
+        car.reset();
+      }
+    }
+  }
+  }
 
     // Display all the people
   
+  // Boundaries werden nicht mehr gezeichnet, sind ja echte Objekte vorhanden
   /*if (borderspresent==1){
   for (CustomBoundary customBoundary: customBoundaries) {
     customBoundary.display();
     
   }
   }*/
+  
   // people that leave the screen, we delete them
   // (note they have to be deleted from both the box2d world and our list
   /*for (int i = cars.size()-1; i >= 0; i--) {
@@ -119,12 +162,17 @@ wave.setFrequency(40+(int(cars.get(0).getSpeed()*1.5)));
   }*/
 }
 
+void win(int carnumber) {
+ won = true;
+}
+
 boolean sketchFullScreen() {
   return true;
 }
 
 void keyPressed()
 { 
+  if (won == false){
   //Car currentCar = cars.get(0);
   //println(keyCode);
   if(keyCode == 38){
@@ -151,12 +199,14 @@ void keyPressed()
   if(keyCode == 65){
     cars.get(1).turnleft = true;
   }
+  }
 }
 
 void keyReleased()
 { 
   //Car currentCar = cars.get(0);
   //println(keyCode);
+  if (won == false){
   if(keyCode == 38){
     cars.get(0).accelerating = false;
   }
@@ -180,6 +230,14 @@ void keyReleased()
   }
   if(keyCode == 65){
     cars.get(1).turnleft = false;
+  }
+  //reset cars
+  if(keyCode == 49){
+    cars.get(0).reset();
+  }
+  if(keyCode == 50){
+    cars.get(1).reset();
+  }
   }
 }
 
