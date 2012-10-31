@@ -44,6 +44,7 @@ int animationCounter1 = 0;
 int animationCounter2 = 0;
 int animationCounter3 = 0;
 int winner = 0;
+boolean show_car_info = false;
 PFont font;
 PFont fps_font;
 
@@ -105,6 +106,17 @@ void setup() {
   //CustomBoundary cs = new CustomBoundary("3:0/1,1/0,1/1");
   //customBoundaries.add(cs);
   borderspresent = 1;
+}
+
+void display_car_info(Car car){
+  textFont (createFont("Arial Bold",12));
+  Vec2 car_pos = car.getPosition();
+  float a = car.body.getAngle();
+  Vec2 car_velocity = car.body.getLinearVelocity();
+  text("("+(int)car_pos.x+","+(int)car_pos.y+")",car_pos.x+20,car_pos.y-20); 
+  text("angle : "+a+"("+Math.toDegrees(a)+")",car_pos.x+20,car_pos.y-8); 
+  text("speed : "+car_velocity.length(),car_pos.x+20,car_pos.y+2);
+  //text("sidewaysAxis : "+new Vec2((float)-Math.sin(a),(float)Math.cos(a)),car_pos.x+20,car_pos.y+2);
 }
 
 synchronized void draw() {
@@ -180,6 +192,7 @@ synchronized void draw() {
     }
   }else{
     background(bg);
+    //background(100);
     pushMatrix();
     translate(goalPosition.x,goalPosition.y);
     scale (0.35);
@@ -204,6 +217,9 @@ wave1.setFrequency(40+(int(cars.get(1).getSpeed()*1.5)));
   // Display all the people
   for (Car car: cars) {
     car.display();
+    if(show_car_info){
+      display_car_info(car);
+    }
   }
   
   for (int cc=0; cc<cars.size(); cc++) {
@@ -246,7 +262,7 @@ void win(int carNumber) {
 }
 
 boolean sketchFullScreen() {
-  return true;
+  return false;
 }
 
 void keyPressed()
@@ -327,6 +343,12 @@ void keyReleased()
       wave1.setAmplitude(0.1); 
      println("Unmuted"); 
       muted = false;
+    }
+    
+    if(key == 'i' && !show_car_info){
+      show_car_info = true;  
+    }else if(key == 'i' && show_car_info){
+      show_car_info = false; 
     }
     
     //reset cars

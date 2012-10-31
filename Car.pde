@@ -1,3 +1,4 @@
+
 class Car {
 
   // We need to keep track of a Body and a width and height
@@ -101,16 +102,7 @@ class Car {
   
   Vec2 getDirectionVectorFromBody(Body b){
     float a = b.getAngle();
-    //Vec2 lv = b.getLinearVelocity();
-    Vec2 lv = new Vec2(0,1);
-    
-    double cs = Math.cos(a);
-    double sn = Math.sin(a);
-    
-    double x = lv.x * cs - lv.y *sn;
-    double y = lv.x*sn + lv.y * cs;
-    if(lv.length() == 0) return new Vec2(0,0);
-    return (new Vec2((float)(x/lv.length()),(float)(y/lv.length())));   
+    return new Vec2((float)-Math.sin(a),(float)Math.cos(a));
   }
   
   void update(float frame_render_time){
@@ -143,22 +135,17 @@ class Car {
       engineSpeed -= 300*frame_render_time;
     else if(!decelerating && engineSpeed < 0)
       engineSpeed = 0;
-
-   
-    if(steeringAngle != 0){
-      engineSpeed -= engineSpeed * Math.abs(steeringAngle)/5;  //decrese speed while steering
-      //println(Math.abs(steeringAngle));
-      //max_speed *= 0.2;
-      //engineSpeed -= engineSpeed * 0.8;//Math.abs(steeringAngle)/5;  //decrese speed while steering
-    }
    
     
-    killOrthogonalVelocity(leftWheel);
-    killOrthogonalVelocity(rightWheel);
-    killOrthogonalVelocity(leftRearWheel);
-    killOrthogonalVelocity(rightRearWheel);
-    killOrthogonalVelocity(body);
+    set_ground_friction(leftWheel,frame_render_time);
+    set_ground_friction(rightWheel,frame_render_time);
+    set_ground_friction(leftRearWheel,frame_render_time);
+    set_ground_friction(rightRearWheel,frame_render_time);
+    //set_ground_friction(body);
     float STEER_SPEED = 25; 
+    
+    float leftWheel_a = leftWheel.getAngle();
+    float rightWheel_a = rightWheel.getAngle();
     
     Vec2 ldirection = getDirectionVectorFromBody(leftWheel);
     Vec2 rdirection = getDirectionVectorFromBody(rightWheel);
@@ -174,16 +161,18 @@ class Car {
   
   //This function applies a "friction" in a direction orthogonal to the body's axis.
   void killOrthogonalVelocity(Body targetBody){
-    Vec2 localPoint = new Vec2(0,0);
-    Vec2 velocity = targetBody.getLinearVelocityFromLocalPoint(localPoint);
-    float a = targetBody.getAngle();
-     
-    Vec2 sidewaysAxis = new Vec2((float)-Math.sin(a),(float)Math.cos(a));
-    
+    Vec2 velocity = targetBody.getLinearVelocity();
+    Vec2 sidewaysAxis = getDirectionVectorFromBody(targetBody);
     float dp = sidewaysAxis.x*velocity.x + sidewaysAxis.y*velocity.y; 
-    
- 
-     targetBody.setLinearVelocity(new Vec2(sidewaysAxis.x * dp,sidewaysAxis.y * dp));//targetBody.GetWorldPoint(localPoint));*/
+    targetBody.setLinearVelocity(new Vec2(sidewaysAxis.x * dp,sidewaysAxis.y * dp));//targetBody.GetWorldPoint(localPoint));*/
+  }
+
+  void set_ground_friction(Body targetBody, float frame_render_time){
+    Vec2 velocity = targetBody.getLinearVelocity();
+    float a = targetBody.getAngle();
+    Vec2 sidewaysAxis = new Vec2((float)Math.cos(a),(float)Math.sin(a));
+    float dp = sidewaysAxis.x*velocity.x + sidewaysAxis.y*velocity.y; 
+    targetBody.applyForce(new Vec2(sidewaysAxis.x*300*frame_render_time*-dp,sidewaysAxis.y*300*frame_render_time*-dp), targetBody.getPosition());
   }
 
   // Drawing the box
@@ -218,6 +207,11 @@ class Car {
    
     popMatrix();
   }
+  
+  Vec2 getPosition(){
+    return box2d.getBodyPixelCoord(body);
+  }
+  
   void displayBody(Body body){
     // We look at each body and get its screen position
     Vec2 pos = box2d.getBodyPixelCoord(body);
@@ -244,10 +238,6 @@ class Car {
     }
     endShape(CLOSE);
     popMatrix();
-  }
-
-  Vec2 getPosition() {
-    return new Vec2(box2d.getBodyPixelCoord(body).x, box2d.getBodyPixelCoord(body).y);
   }
 
   // This function adds the rectangle to the box2d world
