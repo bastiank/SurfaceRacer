@@ -11,11 +11,11 @@ sleep 2
 PP=$!
 
 
-/usr/bin/sudo stdbuf -i 0 -o 0 -e 0 wminput --config /home/surface/Downloads/SurfaceRacer/wiimote.conf --reconnect --wait > /tmp/wminput.tmp &
+/usr/bin/sudo stdbuf -i 0 -o 0 -e 0 wminput --config /home/surface/Downloads/SurfaceRacer/wiimote.conf --reconnect --wait > /tmp/wminput_$USER.tmp &
 WPA=$!
 
 while true; do
-        RESULT=`tail -n 1 /tmp/wminput.tmp`;
+        RESULT=`tail -n 1 /tmp/wminput_$USER.tmp`;
         if [ "$RESULT" = "Ready." ]; then
                 /usr/bin/sudo wminput --config /home/surface/Downloads/SurfaceRacer/wiimote2.conf --reconnect --wait &
                 WPB=$!
