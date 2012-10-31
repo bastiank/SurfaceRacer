@@ -97,8 +97,8 @@ void setup() {
   int carstyle1 = 0;
   int carstyle2 = 0;
   while(carstyle1 == carstyle2){
-  carstyle1 = int(random(6.));//*5);
-  carstyle2 = int(random(6.));//*5);
+  carstyle1 = int(random(40.));//*5);
+  carstyle2 = int(random(40.));//*5);
   }
   cars.add(new Car(960,960,0,30,52,carstyle1));
   cars.add(new Car(960,960,0,30,52,carstyle2));
