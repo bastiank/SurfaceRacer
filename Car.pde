@@ -12,28 +12,32 @@ class Car {
   float engineSpeed = 0;
   float steeringAngle = 0;
   
-  float HORSEPOWERS = 400;
+  //Config Values
+  int max_speed = 800;
+  int max_speed_backwards = 400;
   float MAX_STEER_ANGLE = PI/7;
+  PImage img;
+  int carwidth = 0;
+  int carheight = 0;
+  float steering_acceleration_speed = (PI/5);
+  float STEER_SPEED = 25;
+  int acceleration_speed = 100;
+  int deceleration_speed = 50;
+  int ground_friction = 600;
+  
+  
   
   boolean accelerating = false;
   boolean decelerating = false;
   boolean turnleft = false;
   boolean turnright = false;
   
-  
-  
- PImage img;
- int carwidth = 0;
- int carheight = 0;
+
  Vec2 carStartPos;
   // Constructor
   Car(float x, float y, float orientation, float w, float h, int styleVariant) {
     // Add the box to the box2d world
-    makeBody(new Vec2(x, y),w,h);
-    carwidth = int(w);
-    carheight = int(h);
-    carStartPos = new Vec2(x, y);
-
+    
     if (styleVariant==0) img=loadImage("4x4-GTA1.png");
     if (styleVariant==1) img=loadImage("BeastGTS-GTA1.png");
     if (styleVariant==2) img=loadImage("Brigham-GTA1.png");
@@ -75,6 +79,13 @@ class Car {
     if (styleVariant==38) img=loadImage("Thunderhead-GTA1.png");
     if (styleVariant==39) img=loadImage("TVVan-GTA1-LibertyCity.png");
     if (styleVariant>39) img=loadImage("Vulture-GTA1.png");
+    
+    carwidth = (int)(img.height*0.33);
+    carheight = (int)(img.width*0.33);
+    makeBody(new Vec2(x, y),carwidth,carheight);
+    body.setTransform(body.getPosition(), orientation);
+
+    carStartPos = new Vec2(x, y);
 
   }
   
@@ -109,17 +120,17 @@ class Car {
     
     //println("speed: " + str(engineSpeed) + " / steering: " + str(steeringAngle));
     
-    float max_speed = HORSEPOWERS;
+    //float max_speed = HORSEPOWERS;
      if(turnleft && steeringAngle < (MAX_STEER_ANGLE))
       //println("left");
-      steeringAngle += (PI/5)*frame_render_time*6;
+      steeringAngle += steering_acceleration_speed*frame_render_time*6;
     else if(!turnleft && !turnright)
       //println("leftstop");
       steeringAngle = 0;
         
     if(turnright && steeringAngle > -(MAX_STEER_ANGLE))
       //println("right");
-      steeringAngle -= (PI/5)*frame_render_time*6;
+      steeringAngle -= steering_acceleration_speed*frame_render_time*6;
     else if(!turnright && !turnleft)
       //println("rightstop");
       steeringAngle = 0;
@@ -127,12 +138,12 @@ class Car {
    
     
     if(accelerating && engineSpeed < max_speed)
-      engineSpeed += 600*frame_render_time;
+      engineSpeed += acceleration_speed*frame_render_time*6;
     else if(!accelerating && engineSpeed > 0)
       engineSpeed = 0;
       
-    if(decelerating && engineSpeed > -max_speed/2)
-      engineSpeed -= 300*frame_render_time;
+    if(decelerating && engineSpeed > -max_speed_backwards)
+      engineSpeed -= deceleration_speed*frame_render_time*6;
     else if(!decelerating && engineSpeed < 0)
       engineSpeed = 0;
    
@@ -142,7 +153,7 @@ class Car {
     set_ground_friction(leftRearWheel,frame_render_time);
     set_ground_friction(rightRearWheel,frame_render_time);
     //set_ground_friction(body);
-    float STEER_SPEED = 25; 
+     
     
     float leftWheel_a = leftWheel.getAngle();
     float rightWheel_a = rightWheel.getAngle();
@@ -172,7 +183,7 @@ class Car {
     float a = targetBody.getAngle();
     Vec2 sidewaysAxis = new Vec2((float)Math.cos(a),(float)Math.sin(a));
     float dp = sidewaysAxis.x*velocity.x + sidewaysAxis.y*velocity.y; 
-    targetBody.applyForce(new Vec2(sidewaysAxis.x*300*frame_render_time*-dp,sidewaysAxis.y*300*frame_render_time*-dp), targetBody.getPosition());
+    targetBody.applyForce(new Vec2(sidewaysAxis.x*ground_friction*frame_render_time*-dp,sidewaysAxis.y*ground_friction*frame_render_time*-dp), targetBody.getPosition());
   }
 
   // Drawing the box
@@ -182,6 +193,7 @@ class Car {
     displayBody(leftWheel);
     displayBody(rightRearWheel);
     displayBody(leftRearWheel);
+    //displayBody(body);
     displayCar(body);
   }
   
@@ -241,9 +253,9 @@ class Car {
   }
 
   // This function adds the rectangle to the box2d world
-  void makeBody(Vec2 center, float w, float h) {   
-    Vec2 leftRearWheelPosition= new Vec2(center.x-w/2,center.x+h/2-10);
-    Vec2 rightRearWheelPosition = new Vec2(center.x+w/2,center.x+h/2-10);
+  void makeBody(Vec2 center, float w, float h) {
+    Vec2 leftRearWheelPosition= new Vec2(center.x-w/2,center.y+h/2-10);
+    Vec2 rightRearWheelPosition = new Vec2(center.x+w/2,center.y+h/2-10);
     Vec2 leftFrontWheelPosition= new Vec2(center.x-w/2,center.y-h/2+10);
     Vec2 rightFrontWheelPosition = new Vec2(center.x+w/2,center.y-h/2+10);
     

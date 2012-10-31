@@ -17,6 +17,7 @@ import org.jbox2d.dynamics.contacts.*;
 import ddf.minim.*;
 import ddf.minim.ugens.*;
 
+
 Minim       minim;
 //Minim       minim2;
 //AudioPlayer player;
@@ -26,6 +27,8 @@ Oscil       wave1;
 OscP5 oscP5;
 // A reference to our box2d world
 PBox2D box2d;
+
+int draw_rate = 1;
 
 boolean muted = true;
 
@@ -49,7 +52,7 @@ PFont font;
 PFont fps_font;
 
 void setup() {
- size(1920, 1080);
+ size(displayWidth, displayHeight);
   noStroke();
   smooth();
   //size(displayWidth, displayHeight);
@@ -101,8 +104,8 @@ void setup() {
   carstyle1 = int(random(40.));//*5);
   carstyle2 = int(random(40.));//*5);
   }
-  cars.add(new Car(960,960,0,30,52,carstyle1));
-  cars.add(new Car(960,960,0,30,52,carstyle2));
+  cars.add(new Car(100,200,-PI/2,30,52,carstyle1));
+  cars.add(new Car(displayWidth/2,displayWidth/2,0,30,52,carstyle2));
   //CustomBoundary cs = new CustomBoundary("3:0/1,1/0,1/1");
   //customBoundaries.add(cs);
   borderspresent = 1;
@@ -122,7 +125,7 @@ void display_car_info(Car car){
 synchronized void draw() {
   if(won){
     if (animationState == 0){
-      background(bg);
+      image(bg,0,0);
       fill(0,animationCounter1); // use black with alpha 10
       rectMode(CORNER);
       rect(0,0,width,height);
@@ -191,14 +194,8 @@ synchronized void draw() {
       }
     }
   }else{
-    background(bg);
-    //background(100);
-    pushMatrix();
-    translate(goalPosition.x,goalPosition.y);
-    scale (0.35);
-    image(goal,0,0);
-    popMatrix();
-//println(cars.get(0).getSpeed());
+    
+    //println(cars.get(0).getSpeed());
 wave.setFrequency(40+(int(cars.get(0).getSpeed()*1.5)));
 wave1.setFrequency(40+(int(cars.get(1).getSpeed()*1.5)));
   // We must always step through time!
@@ -214,6 +211,23 @@ wave1.setFrequency(40+(int(cars.get(1).getSpeed()*1.5)));
   for (Car car: cars) {
     car.update(frame_render_time);
   }
+  
+  /*if(frameRate < 20){
+    draw_rate++;
+  }else if(frameRate >= 20 && draw_rate > 1){
+    draw_rate--;
+  }*/
+  
+  if(frameCount%draw_rate==0){ 
+    //background(bg);
+    image(bg, 0, 0); 
+    //background(100);
+    pushMatrix();
+    translate(goalPosition.x,goalPosition.y);
+    scale (0.35);
+    image(goal,0,0);
+    popMatrix();
+
   // Display all the people
   for (Car car: cars) {
     car.display();
@@ -221,7 +235,7 @@ wave1.setFrequency(40+(int(cars.get(1).getSpeed()*1.5)));
       display_car_info(car);
     }
   }
-  
+  }
   for (int cc=0; cc<cars.size(); cc++) {
     float d = sqrt(pow(cars.get(cc).getPosition().x-(goalPosition.x+50),2) + pow(cars.get(cc).getPosition().y-(goalPosition.y+50),2));
     if(d < 30) {
@@ -234,25 +248,8 @@ wave1.setFrequency(40+(int(cars.get(1).getSpeed()*1.5)));
   }
   
   }
-    // Display all the cars
   
-  // Boundaries werden nicht mehr gezeichnet, sind ja echte Objekte vorhanden
-  /*if (borderspresent==1){
-  for (CustomBoundary customBoundary: customBoundaries) {
-    customBoundary.display();
-    
-  }
-  }*/
-  
-
-   // oversampled fonts tend to look better
-  //textFont(font,12);
-  //white float frameRate
-  //fill(0);
-  //text(frameRate,20,20);
-  //gray int frameRate display:
-  //fill(100);
-    textFont (createFont("Arial Bold",12));
+  textFont (createFont("Arial Bold",12));
   text(int(frameRate),20,30);
 }
 
@@ -262,7 +259,7 @@ void win(int carNumber) {
 }
 
 boolean sketchFullScreen() {
-  return false;
+  return true;
 }
 
 void keyPressed()
