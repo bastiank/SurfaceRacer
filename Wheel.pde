@@ -2,6 +2,7 @@ class Wheel implements KeyListener{
   
   CarBody carBody;
   Vec2 start_position;
+  float start_orientation;
   Body body;
   BodyDef bodyDef;
   Joint joint;
@@ -30,10 +31,15 @@ class Wheel implements KeyListener{
   boolean turnleft = false;
   boolean turnright = false;
   
-  Wheel(CarBody carBody, Vec2 position){
+  Wheel(CarBody carBody, Vec2 position, float orientation){
     this.carBody = carBody;
     this.start_position = position;
+    this.start_orientation = orientation;
     makeBody();
+  }
+  
+  Wheel(CarBody carBody, Vec2 position){
+    this(carBody, position, 0);
   }
   
   void reset(){
@@ -44,7 +50,13 @@ class Wheel implements KeyListener{
   void makeBody(){
     bodyDef = new BodyDef();
     bodyDef.type = BodyType.DYNAMIC;
-    bodyDef.position.set(box2d.coordPixelsToWorld(new Vec2(carBody.start_position.x+start_position.x,carBody.start_position.y+start_position.y)));
+    float a = carBody.getAngle();
+    float x = start_position.x;
+    float y = start_position.y;
+    Vec2 rel_pos = new Vec2((float)(Math.cos(a)*x+Math.sin(a)*y),
+                            (float)(-Math.sin(a)*x+Math.cos(a)*y)); 
+    bodyDef.position.set(box2d.coordPixelsToWorld(new Vec2(carBody.getPosition().x+rel_pos.x,carBody.getPosition().y+rel_pos.y)));
+    bodyDef.angle = start_orientation + a;
     body = box2d.createBody(bodyDef);
     
     //Left Rear Wheel shape

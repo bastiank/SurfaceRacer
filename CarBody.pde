@@ -30,6 +30,7 @@ class CarBody  implements KeyListener{
     bodyDef.linearDamping = 1;
     bodyDef.angularDamping = 1;
     bodyDef.position.set(box2d.coordPixelsToWorld(start_position));
+    bodyDef.angle = start_orientation;
     //bodyDef.angle = start_orientation;
    
     body = box2d.createBody(bodyDef);
@@ -46,6 +47,14 @@ class CarBody  implements KeyListener{
     body.createFixture(boxFix); 
   }
   
+  float getAngle(){
+    return body.getAngle();
+  }
+  
+  Vec2 getPosition(){
+    return box2d.getBodyPixelCoord(body);
+  }
+  
   void update(float interval){
     for(Wheel wheel: wheels){
       wheel.update(interval);
@@ -58,7 +67,7 @@ class CarBody  implements KeyListener{
     }
     
     // We look at each body and get its screen position
-    Vec2 pos = box2d.getBodyPixelCoord(body);
+    Vec2 pos =getPosition();
     // Get its angle of rotation
 
     float a = body.getAngle();
