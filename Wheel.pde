@@ -1,10 +1,4 @@
-class Wheel implements KeyListener{
-  
-  CarBody carBody;
-  Vec2 start_position;
-  float start_orientation;
-  Body body;
-  BodyDef bodyDef;
+class Wheel extends VehiclePart implements KeyListener{
   Joint joint;
   RevoluteJoint revoluteJoint;
   
@@ -31,15 +25,14 @@ class Wheel implements KeyListener{
   boolean turnleft = false;
   boolean turnright = false;
   
-  Wheel(CarBody carBody, Vec2 position, float orientation){
-    this.carBody = carBody;
-    this.start_position = position;
-    this.start_orientation = orientation;
+  Wheel(VehiclePart parent, Vec2 position, float orientation){
+    super(position, orientation);
+    parent.attach(this);
     makeBody();
   }
   
-  Wheel(CarBody carBody, Vec2 position){
-    this(carBody, position, 0);
+  Wheel(VehiclePart parent, Vec2 position){
+    this(parent, position, 0);
   }
   
   void reset(){
@@ -50,12 +43,12 @@ class Wheel implements KeyListener{
   void makeBody(){
     bodyDef = new BodyDef();
     bodyDef.type = BodyType.DYNAMIC;
-    float a = carBody.getAngle();
+    float a = parent.getAngle();
     float x = start_position.x;
     float y = start_position.y;
     Vec2 rel_pos = new Vec2((float)(Math.cos(a)*x+Math.sin(a)*y),
                             (float)(-Math.sin(a)*x+Math.cos(a)*y)); 
-    bodyDef.position.set(box2d.coordPixelsToWorld(new Vec2(carBody.getPosition().x+rel_pos.x,carBody.getPosition().y+rel_pos.y)));
+    bodyDef.position.set(box2d.coordPixelsToWorld(new Vec2(parent.getPosition().x+rel_pos.x,parent.getPosition().y+rel_pos.y)));
     bodyDef.angle = start_orientation + a;
     body = box2d.createBody(bodyDef);
     
@@ -72,7 +65,7 @@ class Wheel implements KeyListener{
   void makeStaticJoint(){
     killJoint();
     PrismaticJointDef jointDef = new PrismaticJointDef();
-    jointDef.initialize(carBody.body, body, body.getWorldCenter(), new Vec2(1,0));
+    jointDef.initialize(parent.body, body, body.getWorldCenter(), new Vec2(1,0));
     jointDef.enableLimit = true;
     jointDef.lowerTranslation = jointDef.upperTranslation = 0;
 
@@ -82,7 +75,7 @@ class Wheel implements KeyListener{
   void makeSteerableJoint(){
     killJoint();
     RevoluteJointDef jointDef = new RevoluteJointDef();
-    jointDef.initialize(carBody.body, body, body.getWorldCenter());
+    jointDef.initialize(parent.body, body, body.getWorldCenter());
     jointDef.enableMotor = true;
     jointDef.maxMotorTorque = 100;
  
@@ -97,40 +90,9 @@ class Wheel implements KeyListener{
   void killJoint(){
     if(joint != null) box2d.world.destroyJoint(joint);
   }
-  
-  void display(){
-    Vec2 pos = box2d.getBodyPixelCoord(body);
-    // Get its angle of rotation
-
-    float a = body.getAngle();
-    
-    Fixture f = body.getFixtureList();
-    PolygonShape ps = (PolygonShape) f.getShape();
-
-
-    rectMode(CENTER);
-    pushMatrix();
-    translate(pos.x, pos.y);
-    rotate(-a);
-    fill(0);
-    stroke(0);
-    beginShape();
-    //println(vertices.length);
-    // For every vertex, convert to pixel vector
-    for (int i = 0; i < ps.getVertexCount(); i++) {
-      Vec2 v = box2d.vectorWorldToPixels(ps.getVertex(i));
-      vertex(v.x, v.y);
-    }
-    endShape(CLOSE);
-    popMatrix();
-  }
  
- Vec2 getDirectionVector(){
-    float a = body.getAngle();
-    return new Vec2((float)-Math.sin(a),(float)Math.cos(a));
-  }
- 
- void update(float interval){    
+ void update(float interval){
+    super.update(interval);  
     if(accelerating && engineSpeed < max_speed)
       engineSpeed += acceleration_speed*interval*6;
     else if(!accelerating && engineSpeed > 0)

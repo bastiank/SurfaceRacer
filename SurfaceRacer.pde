@@ -17,6 +17,8 @@ import org.jbox2d.dynamics.contacts.*;
 import ddf.minim.*;
 import ddf.minim.ugens.*;
 
+boolean ctrl_pressed = false;
+
 Minim       minim;
 //Minim       minim2;
 //AudioPlayer player;
@@ -83,25 +85,12 @@ void setup() {
   cars = new ArrayList<Car>();
   boundaries = new ArrayList<Boundary>();
   customBoundaries = new ArrayList<CustomBoundary>();
-  /*for(int x = 0; x<= 500; x+=50){
-    for(int y = 0; y<= 500; y+=50){
-      customBoundaries.add(new CustomBoundary("4:"+(x-5)+"/"+(y-5)+","+(x+5)+"/"+(y-5)+","+(x+5)+"/"+(y+5)+","+(x-5)+"/"+(y+5)));
-    }
-  }*/
-  //customBoundaries.add(new CustomBoundary("4:0/0,960/0,960/540,0/540"));
-  
-  //customBoundaries.add(new CustomBoundary("4:100/100,100/200,200/200,200/100"));
-  //customBoundaries.add(new CustomBoundary("4:960/540,960/440,860/440,860/540"));
-  // Add a bunch of fixed boundaries
-  //boundaries.add(new Boundary(width/4,height-5,width/2-50,10,0));
-  //boundaries.add(new Boundary(3*width/4,height-50,width/2-50,10,0));
+
   boundaries.add(new Boundary(width-5,height/2,10,height,0));
   boundaries.add(new Boundary(5,height/2,10,height,0));
   boundaries.add(new Boundary(width/2,5,width,10,0));
   boundaries.add(new Boundary(width/2,height-5,width,10,0));
   createCars();
-  //CustomBoundary cs = new CustomBoundary("3:0/1,1/0,1/1");
-  //customBoundaries.add(cs);
   borderspresent = 1;
 }
 
@@ -201,9 +190,7 @@ synchronized void draw() {
         wave1.setAmplitude(0.1);
       }
       
-        createCars();
-        //resetControls(0);
-        //resetControls(1);
+      createCars();
       
     }
   }else{
@@ -213,14 +200,10 @@ wave.setFrequency(40+(int(cars.get(0).getSpeed()*1.5)));
 wave1.setFrequency(40+(int(cars.get(1).getSpeed()*1.5)));
   // We must always step through time!
   
-  float frame_render_time = 1/frameRate;
+    float frame_render_time = 1/frameRate;
   
- box2d.world.step(frame_render_time,(int)(frame_render_time*120),(int)(frame_render_time*120));
+   box2d.world.step(frame_render_time,(int)(frame_render_time*120),(int)(frame_render_time*120));
 
-  // Display all the boundaries
-  /*for (Boundary wall: boundaries) {
-    wall.display();
-  }*/
   for (Car car: cars) {
     car.update(frame_render_time);
   }
@@ -252,7 +235,6 @@ wave1.setFrequency(40+(int(cars.get(1).getSpeed()*1.5)));
   for (int cc=0; cc<cars.size(); cc++) {
     float d = sqrt(pow(cars.get(cc).getPosition().x-(goalPosition.x+50),2) + pow(cars.get(cc).getPosition().y-(goalPosition.y+50),2));
     if(d < 30) {
-      //cars.get(cc).reset();
       win(cc);
       wave.setAmplitude(0.0);
       wave1.setAmplitude(0.0);
@@ -279,41 +261,18 @@ void keyPressed(KeyEvent e)
 { 
   int keyCode = e.getKeyCode();
   char key = e.getKeyChar();
-  if (won == false){
-    for(Car car: cars){
-      car.carBody.keyPressed(e);
+  if(keyCode == 17) ctrl_pressed = true;
+  if(!ctrl_pressed){
+    if (won == false){
+      for(Car car: cars){
+        car.carBody.keyPressed(e);
+      }
     }
-  //Car currentCar = cars.get(0);
-  //println(keyCode);
-    if(keyCode == 38){
-      cars.get(0).accelerating = true;
-    }
-    if(keyCode == 40){
-      cars.get(0).decelerating = true;
-    }
-    if(keyCode == 39){
-      cars.get(0).turnright = true;
-    }
-    if(keyCode == 37){
-      cars.get(0).turnleft = true;
-    }
-    if(keyCode == 87){
-      cars.get(1).accelerating = true;
-    }
-    if(keyCode == 83){
-      cars.get(1).decelerating = true;
-    }
-    if(keyCode == 68){
-      cars.get(1).turnright = true;
-    }
-    if(keyCode == 65){
-      cars.get(1).turnleft = true;
-    }
-  }
-  else{
-    if(keyCode == 32){
-      if (animationState == 3){
-        animationState = 4;
+    else{
+      if(keyCode == 32){
+        if (animationState == 3){
+          animationState = 4;
+        }
       }
     }
   }
@@ -321,87 +280,54 @@ void keyPressed(KeyEvent e)
 
 void keyReleased(KeyEvent e)
 { 
-    int keyCode = e.getKeyCode();
+  int keyCode = e.getKeyCode();
   char key = e.getKeyChar();
   println("Key "+key+" : "+keyCode);
   if(keyCode == 27) exit();
+  if(keyCode == 17) ctrl_pressed = false;
   //Car currentCar = cars.get(0);
   //println(keyCode);
-  if (won == false){
-    for(Car car: cars){
-      car.carBody.keyReleased(e);
-    }
-    
-    if(keyCode == 38){
-      cars.get(0).accelerating = false;
-    }
-    if(keyCode == 40){
-      cars.get(0).decelerating = false;
-    }
-    if(keyCode == 39){
-      cars.get(0).turnright = false;
-    }
-    if(keyCode == 37){
-      cars.get(0).turnleft = false;
-    }
-    if(keyCode == 87){
-      cars.get(1).accelerating = false;
-    }
-    if(keyCode == 83){
-      cars.get(1).decelerating = false;
-    }
-    if(keyCode == 68){
-      cars.get(1).turnright = false;
-    }
-    if(keyCode == 65){
-      cars.get(1).turnleft = false;
-    }
-    if(key == 'm' && !muted){
-      wave.setAmplitude(0.0);
-      wave1.setAmplitude(0.0);
-      println("Muted");
-      muted = true;  
-    }else if(key == 'm' && muted){
-      wave.setAmplitude(0.1);
-      wave1.setAmplitude(0.1); 
-     println("Unmuted"); 
-      muted = false;
-    }
-    
-    if(key == 'i' && !show_car_info){
-      show_car_info = true;  
-    }else if(key == 'i' && show_car_info){
-      show_car_info = false; 
-    }
-    
-    //reset cars
-    if(keyCode == 49){
-      //cars.get(0).reset();
-      //resetControls(0);
-    }
-    if(keyCode == 50){
-      //cars.get(1).reset();
-      //resetControls(1);
+  if(ctrl_pressed){
+    println("CTRL + "+keyCode);
+       if(keyCode == KeyEvent.VK_I && !show_car_info){
+        show_car_info = true;  
+      }else if(keyCode == KeyEvent.VK_I && show_car_info){
+        show_car_info = false; 
+      }
+      
+       if(keyCode == KeyEvent.VK_M && !muted){
+        wave.setAmplitude(0.0);
+        wave1.setAmplitude(0.0);
+        println("Muted");
+        muted = true;  
+      }else if(keyCode == KeyEvent.VK_M && muted){
+        wave.setAmplitude(0.1);
+        wave1.setAmplitude(0.1); 
+       println("Unmuted"); 
+        muted = false;
+      }
+  } else { 
+    if (won == false){
+      for(Car car: cars){
+        car.carBody.keyReleased(e);
+      }
+      //reset cars
+      if(keyCode == 49){
+        //cars.get(0).reset();
+      }
+      if(keyCode == 50){
+        //cars.get(1).reset();
+      }
     }
   }
 }
-/*
-void resetControls(int carnumber){
-    cars.get(carnumber).accelerating = false;
-    cars.get(carnumber).decelerating = false;
-    cars.get(carnumber).turnright = false;
-    cars.get(carnumber).turnleft = false; 
-}*/
 
 synchronized void oscEvent(OscMessage theOscMessage) { 
    borderspresent = 0;
-//   println("Killing everybody...");
    for (int i = customBoundaries.size()-1; i > 0; i--) {
-//    println("KILL!!");
    customBoundaries.get(i).killBody();
    customBoundaries.remove(i);
    } 
-//   println("Everybody DEAD!");
       print (customBoundaries);
    int counter = 0;
    String i = "fg";
@@ -420,10 +346,7 @@ synchronized void oscEvent(OscMessage theOscMessage) {
 void mousePressed() {
   int x = (int)(mouseX/2);
   int y = (int)(mouseY/2);
-//  customBoundaries.add(new CustomBoundary("4:"+(x-5)+"/"+(y-5)+","+(x+5)+"/"+(y-5)+","+(x+5)+"/"+(y+5)+","+(x-5)+"/"+(y+5)));
-  //CustomBoundary cs = new CustomBoundary("3:50/50,50/100,100/100");
   goalPosition =new Vec2(mouseX-50,mouseY-50);
-  //customBoundaries.add(cs);
 }
 
 

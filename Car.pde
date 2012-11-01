@@ -83,28 +83,17 @@ class Car {
     carBody = new CarBody(img, new Vec2(x,y), orientation);
     
     Wheel leftRearWheel = new Wheel(carBody,new Vec2(-carBody.width/2,carBody.height/2-10));
-    carBody.wheels.add(leftRearWheel);
     
     Wheel rightRearWheel = new Wheel(carBody,new Vec2(carBody.width/2,carBody.height/2-10));
-    carBody.wheels.add(rightRearWheel);
   
-    Wheel leftWheel = new Wheel(carBody,new Vec2(-carBody.width/2,carBody.height/2-48));
+    Wheel leftWheel = new Wheel(carBody, new Vec2(-carBody.width/2,carBody.height/2-48));
     leftWheel.setMotorKeys(up,down);
     leftWheel.setSteeringKeys(left,right);
-    carBody.wheels.add(leftWheel);
     
     Wheel rightWheel = new Wheel(carBody,new Vec2(carBody.width/2,carBody.height/2-48));
     rightWheel.setMotorKeys(up,down);
     rightWheel.setSteeringKeys(left,right);
-    carBody.wheels.add(rightWheel);
-    
-    //leftRearWheel.setMotorKeys(84,71);
-    //leftRearWheel.setSteeringKeys(90,72);
-    //rightRearWheel.setMotorKeys(90,72);
-    
-    makeBody();
-    //carStartPos = new Vec2(x, y);
-    //body.setTransform(body.getPosition(), orientation);
+ 
   }
   
   float getSpeed(){
@@ -134,20 +123,15 @@ class Car {
   }
   
   Vec2 getPosition(){
-    return box2d.getBodyPixelCoord(carBody.body);
+    return carBody.getPosition();
   }
   
   float getAngle(){
-    return carBody.body.getAngle();
+    return carBody.getAngle();
   }
   
   Vec2 getLinearVelocity(){
     return carBody.body.getLinearVelocity();
-  }
-  
-  // This function adds the rectangle to the box2d world
-  void makeBody() { 
-   
   }
 }
 
