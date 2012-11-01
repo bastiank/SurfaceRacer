@@ -17,7 +17,6 @@ import org.jbox2d.dynamics.contacts.*;
 import ddf.minim.*;
 import ddf.minim.ugens.*;
 
-
 Minim       minim;
 //Minim       minim2;
 //AudioPlayer player;
@@ -53,8 +52,10 @@ PFont fps_font;
 
 void setup() {
  size(displayWidth, displayHeight);
+ frameRate(60);
   noStroke();
   smooth();
+  //frameRate(120);
   //size(displayWidth, displayHeight);
   minim = new Minim(this);
   //minim2 = new Minim(this);
@@ -98,24 +99,36 @@ void setup() {
   boundaries.add(new Boundary(5,height/2,10,height,0));
   boundaries.add(new Boundary(width/2,5,width,10,0));
   boundaries.add(new Boundary(width/2,height-5,width,10,0));
+  createCars();
+  //CustomBoundary cs = new CustomBoundary("3:0/1,1/0,1/1");
+  //customBoundaries.add(cs);
+  borderspresent = 1;
+}
+
+void destroyCars(){
+  for(Car car: cars){
+    car.killBody();
+  }
+  cars.clear();
+}
+
+void createCars(){
+  destroyCars();
   int carstyle1 = 0;
   int carstyle2 = 0;
   while(carstyle1 == carstyle2){
   carstyle1 = int(random(40.));//*5);
   carstyle2 = int(random(40.));//*5);
   }
-  cars.add(new Car(100,200,-PI/2,30,52,carstyle1));
-  cars.add(new Car(displayWidth/2,displayWidth/2,0,30,52,carstyle2));
-  //CustomBoundary cs = new CustomBoundary("3:0/1,1/0,1/1");
-  //customBoundaries.add(cs);
-  borderspresent = 1;
+  cars.add(new Car(100,200,-PI/2,carstyle1,37,39,38,40));
+  cars.add(new Car(displayWidth/2,displayWidth/2,0,carstyle2,65,68,87,83));
 }
 
 void display_car_info(Car car){
   textFont (createFont("Arial Bold",12));
   Vec2 car_pos = car.getPosition();
-  float a = car.body.getAngle();
-  Vec2 car_velocity = car.body.getLinearVelocity();
+  float a = car.getAngle();
+  Vec2 car_velocity = car.getLinearVelocity();
   text("("+(int)car_pos.x+","+(int)car_pos.y+")",car_pos.x+20,car_pos.y-20); 
   text("angle : "+a+"("+Math.toDegrees(a)+")",car_pos.x+20,car_pos.y-8); 
   text("speed : "+car_velocity.length(),car_pos.x+20,car_pos.y+2);
@@ -187,11 +200,11 @@ synchronized void draw() {
         wave.setAmplitude(0.1);
         wave1.setAmplitude(0.1);
       }
-      for(Car car: cars) {
-        car.reset();
-        resetControls(0);
-        resetControls(1);
-      }
+      
+        createCars();
+        //resetControls(0);
+        //resetControls(1);
+      
     }
   }else{
     
@@ -202,7 +215,7 @@ wave1.setFrequency(40+(int(cars.get(1).getSpeed()*1.5)));
   
   float frame_render_time = 1/frameRate;
   
-  box2d.world.step(frame_render_time,(int)(frame_render_time*120),(int)(frame_render_time*120));
+ box2d.world.step(frame_render_time,(int)(frame_render_time*120),(int)(frame_render_time*120));
 
   // Display all the boundaries
   /*for (Boundary wall: boundaries) {
@@ -262,9 +275,14 @@ boolean sketchFullScreen() {
   return true;
 }
 
-void keyPressed()
+void keyPressed(KeyEvent e)
 { 
+  int keyCode = e.getKeyCode();
+  char key = e.getKeyChar();
   if (won == false){
+    for(Car car: cars){
+      car.carBody.keyPressed(e);
+    }
   //Car currentCar = cars.get(0);
   //println(keyCode);
     if(keyCode == 38){
@@ -301,11 +319,19 @@ void keyPressed()
   }
 }
 
-void keyReleased()
+void keyReleased(KeyEvent e)
 { 
+    int keyCode = e.getKeyCode();
+  char key = e.getKeyChar();
+  println("Key "+key+" : "+keyCode);
+  if(keyCode == 27) exit();
   //Car currentCar = cars.get(0);
   //println(keyCode);
   if (won == false){
+    for(Car car: cars){
+      car.carBody.keyReleased(e);
+    }
+    
     if(keyCode == 38){
       cars.get(0).accelerating = false;
     }
@@ -350,22 +376,22 @@ void keyReleased()
     
     //reset cars
     if(keyCode == 49){
-      cars.get(0).reset();
-      resetControls(0);
+      //cars.get(0).reset();
+      //resetControls(0);
     }
     if(keyCode == 50){
-      cars.get(1).reset();
-      resetControls(1);
+      //cars.get(1).reset();
+      //resetControls(1);
     }
   }
 }
-
+/*
 void resetControls(int carnumber){
     cars.get(carnumber).accelerating = false;
     cars.get(carnumber).decelerating = false;
     cars.get(carnumber).turnright = false;
     cars.get(carnumber).turnleft = false; 
-}
+}*/
 
 synchronized void oscEvent(OscMessage theOscMessage) { 
    borderspresent = 0;
