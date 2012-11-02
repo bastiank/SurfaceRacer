@@ -17,17 +17,17 @@ class Bus extends Vehicle {
         carBody = new CarBody(img, new Vec2(x,y), orientation);
     
     Wheel leftRearWheel = new Wheel(carBody,new Vec2(-carBody.width/2,carBody.height/2-20));
-    leftRearWheel.ground_friction = 2000;
+    leftRearWheel.ground_friction = 1000;
     leftRearWheel.setMotorKeys(up,down);
     leftRearWheel.max_speed = 600;
     leftRearWheel.max_speed_backwards = 200;
-    leftRearWheel.acceleration_speed = 70;
+    leftRearWheel.acceleration_speed = 80;
     Wheel rightRearWheel = new Wheel(carBody,new Vec2(carBody.width/2,carBody.height/2-20));
-    rightRearWheel.ground_friction = 2000;
+    rightRearWheel.ground_friction = 1000;
     rightRearWheel.setMotorKeys(up,down);
     rightRearWheel.max_speed = 600;
     rightRearWheel.max_speed_backwards = 200;
-    rightRearWheel.acceleration_speed = 70;
+    rightRearWheel.acceleration_speed = 80;
     
     Wheel leftWheel = new Wheel(carBody, new Vec2(-carBody.width/2,carBody.height/2-104));
     leftWheel.setSteeringKeys(left,right);
