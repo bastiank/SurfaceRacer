@@ -110,7 +110,7 @@ void createVehicles(){
   vehiclestyle1 = int(random(40.));//*5);
   vehiclestyle2 = 3;// int(random(4.));//*5);
   }
-  vehicles.add(new Bike(100,200,-PI/2,vehiclestyle1,37,39,38,40));
+  vehicles.add(new Car(100,200,-PI/2,-1,37,39,38,40));
   vehicles.add(new Limo(displayWidth/2,displayWidth/2,0,vehiclestyle2,65,68,87,83));
 }
 
@@ -238,16 +238,16 @@ wave1.setFrequency(40+(int(vehicles.get(1).getSpeed()*1.5)));
   }
 
   }
-  for (int cc=0; cc<vehicles.size(); cc++) {
-    float d = sqrt(pow(vehicles.get(cc).getPosition().x-(goalPosition.x+50),2) + pow(vehicles.get(cc).getPosition().y-(goalPosition.y+50),2));
+  for(Vehicle vehicle: vehicles){
+  
+    float d = sqrt(pow(vehicle.getPosition().x-(goalPosition.x+50),2) + pow(vehicle.getPosition().y-(goalPosition.y+50),2));
     if(d < 30) {
-      win(cc);
+      win(vehicles.indexOf(vehicle));
       wave.setAmplitude(0.0);
       wave1.setAmplitude(0.0);
     }
   
   }
-  
   }
   
   textFont (createFont("Arial Bold",12));
@@ -341,7 +341,11 @@ synchronized void oscEvent(OscMessage theOscMessage) {
      i = (theOscMessage.get(counter).stringValue());
      println (i);
      if (i.equals("END"))break;
-     createCustomBoundariesFromString(i);
+     try{
+       createCustomBoundariesFromString(i);
+     }catch(Exception e){
+
+   }
      counter ++;
    }
    print (customBoundaries);
