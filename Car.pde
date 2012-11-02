@@ -1,43 +1,14 @@
 
-class Car {
-
-  // We need to keep track of a Body and a width and height
+class Car extends Vehicle {
   
-  CarBody carBody;
+  Car(float x, float y, float orientation, int styleVariant, int left, int right, int up, int down) {
+    super( x,  y, orientation,  styleVariant, left,  right,  up,  down); 
+  }
   
-  Body leftWheel;
-  Body rightWheel;
-  Body leftRearWheel;
-  Body rightRearWheel;
-  RevoluteJoint leftJoint;
-  RevoluteJoint rightJoint;
-  float engineSpeed = 0;
-  float steeringAngle = 0;
-  
-  //Config Values
-  int max_speed = 800;
-  int max_speed_backwards = 400;
-  float MAX_STEER_ANGLE = PI/7;
-  int carwidth = 0;
-  int carheight = 0;
-  float steering_acceleration_speed = (PI/5);
-  float STEER_SPEED = 25;
-  int acceleration_speed = 100;
-  int deceleration_speed = 50;
-  int ground_friction = 600;
-  
-  boolean accelerating = false;
-  boolean decelerating = false;
-  boolean turnleft = false;
-  boolean turnright = false;
-  
-
- Vec2 carStartPos;
-  // Constructor
-  Car(float x, float y, float orientation, int styleVariant,int left, int right, int up, int down) {
+  VehiclePart buildVehicle() {
     // Add the box to the box2d world
     PImage img = new PImage();
-    
+    if (styleVariant<0) styleVariant = int(random(40.));
     if (styleVariant==0) img=loadImage("4x4-GTA1.png");
     if (styleVariant==1) img=loadImage("BeastGTS-GTA1.png");
     if (styleVariant==2) img=loadImage("Brigham-GTA1.png");
@@ -93,45 +64,8 @@ class Car {
     Wheel rightWheel = new Wheel(carBody,new Vec2(carBody.width/2,carBody.height/2-48));
     rightWheel.setMotorKeys(up,down);
     rightWheel.setSteeringKeys(left,right);
+    return carBody;
+  }
  
-  }
-  
-  float getSpeed(){
-    return  carBody.body.getLinearVelocity().length();
-  }
-  // This function removes the particle from the box2d world
-  void killBody() {
-    carBody.killBody();
-  }
-  
-  
-  void update(float interval){
-    carBody.update(interval);
-  }
-  
-  //This function applies a "friction" in a direction orthogonal to the body's axis.
-  /*void killOrthogonalVelocity(Body targetBody){
-    Vec2 velocity = targetBody.getLinearVelocity();
-    Vec2 sidewaysAxis = getDirectionVectorFromBody(targetBody);
-    float dp = sidewaysAxis.x*velocity.x + sidewaysAxis.y*velocity.y; 
-    targetBody.setLinearVelocity(new Vec2(sidewaysAxis.x * dp,sidewaysAxis.y * dp));//targetBody.GetWorldPoint(localPoint));
-  }*/
-
-  // Drawing the box
-  synchronized void display() {
-    carBody.display();
-  }
-  
-  Vec2 getPosition(){
-    return carBody.getPosition();
-  }
-  
-  float getAngle(){
-    return carBody.getAngle();
-  }
-  
-  Vec2 getLinearVelocity(){
-    return carBody.body.getLinearVelocity();
-  }
 }
 

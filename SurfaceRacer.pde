@@ -36,7 +36,7 @@ boolean muted = true;
 // A list we'll use to track fixed objects
 ArrayList<Boundary> boundaries;
 // A list for all of our rectanglesd
-ArrayList<Car> cars;
+ArrayList<Vehicle> vehicles;
 ArrayList<CustomBoundary> customBoundaries;
 int borderspresent = 0;
 PImage bg;
@@ -82,7 +82,7 @@ void setup() {
   box2d.setGravity(0, 0);
 
   // Create ArrayLists  
-  cars = new ArrayList<Car>();
+  vehicles = new ArrayList<Vehicle>();
   boundaries = new ArrayList<Boundary>();
   customBoundaries = new ArrayList<CustomBoundary>();
 
@@ -90,30 +90,30 @@ void setup() {
   boundaries.add(new Boundary(5,height/2,10,height,0));
   boundaries.add(new Boundary(width/2,5,width,10,0));
   boundaries.add(new Boundary(width/2,height-5,width,10,0));
-  createCars();
+  createVehicles();
   borderspresent = 1;
 }
 
-void destroyCars(){
-  for(Car car: cars){
+void destroyVehicles(){
+  for(Vehicle car: vehicles){
     car.killBody();
   }
-  cars.clear();
+  vehicles.clear();
 }
 
-void createCars(){
-  destroyCars();
-  int carstyle1 = 0;
-  int carstyle2 = 0;
-  while(carstyle1 == carstyle2){
-  carstyle1 = int(random(40.));//*5);
-  carstyle2 = int(random(40.));//*5);
+void createVehicles(){
+  destroyVehicles();
+  int vehiclestyle1 = 0;
+  int vehiclestyle2 = 0;
+  while(vehiclestyle1 == vehiclestyle2){
+  vehiclestyle1 = int(random(40.));//*5);
+  vehiclestyle2 = 3;// int(random(4.));//*5);
   }
-  cars.add(new Car(100,200,-PI/2,carstyle1,37,39,38,40));
-  cars.add(new Car(displayWidth/2,displayWidth/2,0,carstyle2,65,68,87,83));
+  vehicles.add(new Bike(100,200,-PI/2,vehiclestyle1,37,39,38,40));
+  vehicles.add(new Limo(displayWidth/2,displayWidth/2,0,vehiclestyle2,65,68,87,83));
 }
 
-void display_car_info(Car car){
+void display_car_info(Vehicle car){
   textFont (createFont("Arial Bold",12));
   Vec2 car_pos = car.getPosition();
   float a = car.getAngle();
@@ -190,21 +190,21 @@ synchronized void draw() {
         wave1.setAmplitude(0.1);
       }
       
-      createCars();
+      createVehicles();
       
     }
   }else{
     
-    //println(cars.get(0).getSpeed());
-wave.setFrequency(40+(int(cars.get(0).getSpeed()*1.5)));
-wave1.setFrequency(40+(int(cars.get(1).getSpeed()*1.5)));
+    //println(vehicles.get(0).getSpeed());
+wave.setFrequency(40+(int(vehicles.get(0).getSpeed()*1.5)));
+wave1.setFrequency(40+(int(vehicles.get(1).getSpeed()*1.5)));
   // We must always step through time!
   
     float frame_render_time = 1/frameRate;
   
    box2d.world.step(frame_render_time,(int)(frame_render_time*120),(int)(frame_render_time*120));
 
-  for (Car car: cars) {
+  for (Vehicle car: vehicles) {
     car.update(frame_render_time);
   }
   
@@ -225,15 +225,15 @@ wave1.setFrequency(40+(int(cars.get(1).getSpeed()*1.5)));
     popMatrix();
 
   // Display all the people
-  for (Car car: cars) {
+  for (Vehicle car: vehicles) {
     car.display();
     if(show_car_info){
       display_car_info(car);
     }
   }
   }
-  for (int cc=0; cc<cars.size(); cc++) {
-    float d = sqrt(pow(cars.get(cc).getPosition().x-(goalPosition.x+50),2) + pow(cars.get(cc).getPosition().y-(goalPosition.y+50),2));
+  for (int cc=0; cc<vehicles.size(); cc++) {
+    float d = sqrt(pow(vehicles.get(cc).getPosition().x-(goalPosition.x+50),2) + pow(vehicles.get(cc).getPosition().y-(goalPosition.y+50),2));
     if(d < 30) {
       win(cc);
       wave.setAmplitude(0.0);
@@ -264,7 +264,7 @@ void keyPressed(KeyEvent e)
   if(keyCode == 17) ctrl_pressed = true;
   if(!ctrl_pressed){
     if (won == false){
-      for(Car car: cars){
+      for(Vehicle car: vehicles){
         car.carBody.keyPressed(e);
       }
     }
@@ -285,7 +285,7 @@ void keyReleased(KeyEvent e)
   println("Key "+key+" : "+keyCode);
   if(keyCode == 27) exit();
   if(keyCode == 17) ctrl_pressed = false;
-  //Car currentCar = cars.get(0);
+  //Vehicle currentVehicle = vehicles.get(0);
   //println(keyCode);
   if(ctrl_pressed){
     println("CTRL + "+keyCode);
@@ -308,15 +308,15 @@ void keyReleased(KeyEvent e)
       }
   } else { 
     if (won == false){
-      for(Car car: cars){
+      for(Vehicle car: vehicles){
         car.carBody.keyReleased(e);
       }
-      //reset cars
+      //reset vehicles
       if(keyCode == 49){
-        //cars.get(0).reset();
+        //vehicles.get(0).reset();
       }
       if(keyCode == 50){
-        //cars.get(1).reset();
+        //vehiclesz.get(1).reset();
       }
     }
   }
