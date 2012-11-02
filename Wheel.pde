@@ -46,7 +46,7 @@ class Wheel extends VehiclePart implements KeyListener{
     float a = parent.getAngle();
     float x = start_position.x;
     float y = start_position.y;
-    Vec2 rel_pos = new Vec2((float)(Math.cos(a)*x+Math.sin(a)*y),
+    Vec2 rel_pos =  new Vec2((float)(Math.cos(a)*x+Math.sin(a)*y),
                             (float)(-Math.sin(a)*x+Math.cos(a)*y)); 
     bodyDef.position.set(box2d.coordPixelsToWorld(new Vec2(parent.getPosition().x+rel_pos.x,parent.getPosition().y+rel_pos.y)));
     bodyDef.angle = start_orientation + a;
@@ -55,7 +55,7 @@ class Wheel extends VehiclePart implements KeyListener{
     //Left Rear Wheel shape
     PolygonShape bodyShapeDef = new PolygonShape();
     FixtureDef bodyShapeFix = new FixtureDef();
-    bodyShapeDef.setAsBox(0.2,0.5);
+    bodyShapeDef.setAsBox(box2d.scalarPixelsToWorld(2),box2d.scalarPixelsToWorld(5));
     bodyShapeFix.density = 1;
     bodyShapeFix.shape = bodyShapeDef;
     body.createFixture(bodyShapeFix);
