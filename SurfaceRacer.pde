@@ -110,7 +110,7 @@ void createVehicles(){
   vehiclestyle1 = int(random(40.));//*5);
   vehiclestyle2 = 3;// int(random(4.));//*5);
   }
-  vehicles.add(new Car(100,200,-PI/2,-1,37,39,38,40));
+  vehicles.add(new Bike(100,200,-PI/2,-1,37,39,38,40));
   vehicles.add(new Limo(displayWidth/2,displayWidth/2,0,vehiclestyle2,65,68,87,83));
 }
 

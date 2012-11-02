@@ -25,6 +25,8 @@ abstract class VehiclePart implements KeyListener{
     this.img = img; 
     width = (int)(img.height*0.33);
     height = (int)(img.width*0.33);
+    //width = (int)(img.height);
+    //height = (int)(img.width);
   }
   
   void setImage(String img_path){
@@ -84,9 +86,13 @@ abstract class VehiclePart implements KeyListener{
       endShape(CLOSE);
     } else {
       rotate(-a+PI/2);
-      scale (0.35);
+      scale (0.33);
       image(img,0-img.width/2,0-img.height/2);
     }
+    pushStyle();
+    fill(255,0,0);
+    ellipse(0, 0, 5, 5);
+    popStyle();
     popMatrix();  
   }
   

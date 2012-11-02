@@ -13,7 +13,7 @@ class Bike extends Vehicle {
     
         carBody = new CarBody(img, new Vec2(x,y), orientation);
     
-    Wheel leftRearWheel = new Wheel(carBody,new Vec2(-carBody.width/2,carBody.height/2-10));
+    Wheel leftRearWheel = new Wheel(carBody,new Vec2(0,carBody.height/2-10));
     leftRearWheel.ground_friction = 1000;
     leftRearWheel.setMotorKeys(up,down);
     
@@ -21,7 +21,7 @@ class Bike extends Vehicle {
     leftRearWheel.max_speed = 500;
     leftRearWheel.max_speed_backwards = 200;
     leftRearWheel.acceleration_speed = 70;
-    Wheel leftWheel = new Wheel(carBody, new Vec2(-carBody.width/2,carBody.height/2-35));
+    Wheel leftWheel = new Wheel(carBody, new Vec2(0,carBody.height/2-35));
     leftWheel.setSteeringKeys(left,right);
     
     return carBody;
