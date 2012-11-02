@@ -330,10 +330,10 @@ void keyReleased(KeyEvent e)
 
 synchronized void oscEvent(OscMessage theOscMessage) { 
    borderspresent = 0;
-   for (int i = customBoundaries.size()-1; i > 0; i--) {
-   customBoundaries.get(i).killBody();
-   customBoundaries.remove(i);
+   for (CustomBoundary cs: customBoundaries) {
+     cs.killBody();
    } 
+   customBoundaries.clear();
       print (customBoundaries);
    int counter = 0;
    String i = "fg";
