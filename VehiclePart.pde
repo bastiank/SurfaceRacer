@@ -89,10 +89,10 @@ abstract class VehiclePart implements KeyListener{
       scale (0.33);
       image(img,0-img.width/2,0-img.height/2);
     }
-    pushStyle();
+    /*pushStyle();
     fill(255,0,0);
     ellipse(0, 0, 5, 5);
-    popStyle();
+    popStyle();*/
     popMatrix();  
   }
   

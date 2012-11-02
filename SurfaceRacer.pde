@@ -110,8 +110,44 @@ void createVehicles(){
   vehiclestyle1 = int(random(40.));//*5);
   vehiclestyle2 = 3;// int(random(4.));//*5);
   }
-  vehicles.add(new Bike(100,200,-PI/2,-1,37,39,38,40));
-  vehicles.add(new Limo(displayWidth/2,displayWidth/2,0,vehiclestyle2,65,68,87,83));
+  
+  switch(int(random(5))){
+    case 0:
+      vehicles.add(new Bike(100,100,-PI/2,-1,37,39,38,40));
+      break;  
+    case 1:
+      vehicles.add(new Car(100,100,-PI/2,-1,37,39,38,40));
+      break;  
+    case 2:
+      vehicles.add(new Limo(100,100,-PI/2,-1,37,39,38,40));
+      break;  
+    case 3:
+      vehicles.add(new Truck(100,100,-PI/2,-1,37,39,38,40));
+      break;  
+    case 4:
+      vehicles.add(new Bus(100,100,-PI/2,-1,37,39,38,40));
+      break;  
+  }
+  
+  switch(int(random(5))){
+    case 0:
+      vehicles.add(new Bike(displayWidth-100,displayHeight-100,PI/2,-1,65,68,87,83));
+      break;  
+    case 1:
+      vehicles.add(new Car(displayWidth-100,displayHeight-100,PI/2,-1,65,68,87,83));
+      break;  
+    case 2:
+      vehicles.add(new Limo(displayWidth-100,displayHeight-100,PI/2,-1,65,68,87,83));
+      break;  
+    case 3:
+      vehicles.add(new Truck(displayWidth-100,displayHeight-100,PI/2,-1,65,68,87,83));
+      break;  
+    case 4:
+      vehicles.add(new Bus(displayWidth-100,displayHeight-100,PI/2,-1,65,68,87,83));
+      break;  
+  }
+  //vehicles.add(new Bike(100,200,-PI/2,-1,37,39,38,40));
+  //vehicles.add(new Limo(displayWidth/2,displayWidth/2,0,-1,65,68,87,83));
 }
 
 void display_car_info(Vehicle car){
