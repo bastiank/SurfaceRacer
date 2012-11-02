@@ -94,7 +94,7 @@ int findSquares4( IplImage* img, CvMemStorage* storage )
         result = cvApproxPoly( contours, sizeof(CvContour), storage,
             CV_POLY_APPROX_DP, cvContourPerimeter(contours)*0.02, 0 );
 
-		if(fabs(cvContourArea(result,CV_WHOLE_SEQ)) > 500) {
+		if(fabs(cvContourArea(result,CV_WHOLE_SEQ)) > 50) {
 			ii++;
 			CvPoint* firstp = (CvPoint*)cvGetSeqElem( result, 0 );
 			CvPoint* lastp = (CvPoint*)cvGetSeqElem( result, 0 );
@@ -186,7 +186,7 @@ int main(int argc, char* argv[]) {
 		cvReleaseImage( &img );
 
 		// wait for a key
-		int key = cvWaitKey(1000);
+		int key = cvWaitKey(200);
 		if(key == 113) {
 			usb_close( s40 );
 			return 0;
