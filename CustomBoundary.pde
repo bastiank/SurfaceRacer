@@ -4,15 +4,17 @@
 // PBox2D example
 
 // A rectangular box
+
+import org.newdawn.slick.geom.Polygon;
 class CustomBoundary {
 
   // We need to keep track of a Body and a width and height
   Body body;
    
   // Constructor
-  CustomBoundary(String bodystring) {
+  CustomBoundary(Polygon poly) {
     // Add the box to the box2d world
-    makeBody(bodystring);
+    makeBody(poly);
   }
 
   // This function removes the particle from the box2d world
@@ -60,27 +62,18 @@ class CustomBoundary {
     popMatrix();
   }
 
+ 
+  
   // This function adds the rectangle to the box2d world
-  void makeBody(String bodystring) {
-   // int[] values = new int[7];
-    String[] stringSegments = new String[2];
-    stringSegments = bodystring.split(":");
-    int numberOfVertices = int(stringSegments[0]);
-    //println(str(numberOfVertices));
-    String vertexString = stringSegments[1];
-    String[] vertexStrings = new String[numberOfVertices];
-    vertexStrings = trim(vertexString.split(","));
-    //println(vertexStrings); 
-    // Define a polygon (this is what we use for a rectangle)
+  void makeBody(Polygon poly) {
+    poly.setClosed(true);
     PolygonShape sd = new PolygonShape();
-    Vec2[] vertices = new Vec2[numberOfVertices];
+    int numberOfVertices = poly.getPointCount();
+    Vec2[] vertices = new Vec2[poly.getPointCount()];
 
 
     for(int i = 0; i < numberOfVertices; i++){
-      int[] myvertex = new int[2];
-      myvertex = int(trim(vertexStrings[i].split("/")));
-      //println(myvertex);
-      vertices[i] = box2d.vectorPixelsToWorld(new Vec2(myvertex[0]*2,myvertex[1]*2));
+      vertices[i] = box2d.vectorPixelsToWorld(new Vec2(poly.getPoint(i)[0],poly.getPoint(i)[1]));
     }
 
     sd.set(vertices, vertices.length);
@@ -95,4 +88,5 @@ class CustomBoundary {
 
   }
 }
+
 

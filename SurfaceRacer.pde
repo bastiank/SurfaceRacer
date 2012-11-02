@@ -16,6 +16,7 @@ import oscP5.*;
 import org.jbox2d.dynamics.contacts.*;
 import ddf.minim.*;
 import ddf.minim.ugens.*;
+import org.newdawn.slick.geom.Polygon;
 
 boolean ctrl_pressed = false;
 
@@ -231,6 +232,11 @@ wave1.setFrequency(40+(int(cars.get(1).getSpeed()*1.5)));
       display_car_info(car);
     }
   }
+  
+  for (CustomBoundary cs: customBoundaries){
+    cs.display();
+  }
+
   }
   for (int cc=0; cc<cars.size(); cc++) {
     float d = sqrt(pow(cars.get(cc).getPosition().x-(goalPosition.x+50),2) + pow(cars.get(cc).getPosition().y-(goalPosition.y+50),2));
@@ -335,8 +341,7 @@ synchronized void oscEvent(OscMessage theOscMessage) {
      i = (theOscMessage.get(counter).stringValue());
      println (i);
      if (i.equals("END"))break;
-     CustomBoundary cs = new CustomBoundary(i);
-     customBoundaries.add(cs);
+     createCustomBoundariesFromString(i);
      counter ++;
    }
    print (customBoundaries);
@@ -347,6 +352,42 @@ void mousePressed() {
   int x = (int)(mouseX/2);
   int y = (int)(mouseY/2);
   goalPosition =new Vec2(mouseX-50,mouseY-50);
+  
 }
+
+ void createCustomBoundariesFromString(String bodystring){
+   
+   // int[] values = new int[7];
+    String[] stringSegments = new String[2];
+    stringSegments = bodystring.split(":");
+    int numberOfVertices = int(stringSegments[0]);
+    //println(str(numberOfVertices));
+    String vertexString = stringSegments[1];
+    String[] vertexStrings = new String[numberOfVertices];
+    vertexStrings = trim(vertexString.split(","));
+    //println(vertexStrings); 
+    // Define a polygon (this is what we use for a rectangle)
+    PolygonShape sd = new PolygonShape();
+    Vec2[] vertices = new Vec2[numberOfVertices];
+    
+    Polygon poly = new Polygon();
+
+    for(int i = 0; i < numberOfVertices; i++){
+      int[] myvertex = new int[2];
+      myvertex = int(trim(vertexStrings[i].split("/")));
+      //println(myvertex);
+      poly.addPoint(myvertex[0]*2,myvertex[1]*2);
+      //vertices[i] = box2d.vectorPixelsToWorld(new Vec2(myvertex[0]*2,myvertex[1]*2));
+    }
+    
+    ArrayList<Polygon> convex_polys = ShapeUtil.makeConvex(poly);
+
+    for(Polygon convex_poly: convex_polys){
+       CustomBoundary cs = new CustomBoundary(convex_poly);
+       customBoundaries.add(cs);   
+    }
+    
+
+  } 
 
 
