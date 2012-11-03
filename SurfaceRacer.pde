@@ -65,7 +65,7 @@ void setup() {
   size(displayWidth, displayHeight,P2D);
 
   // Set fixed framerate
-  frameRate(40);
+  frameRate(50);
   noStroke();
   // Render it smoooooth!
   smooth();
