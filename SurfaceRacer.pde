@@ -107,6 +107,8 @@ void setup() {
   createVehicles();
   // We has borders!
   borderspresent = 1;
+  
+  textFont (createFont("Arial Bold",12));
 }
  
 void destroyVehicles(){
@@ -166,7 +168,6 @@ void createVehicles(){
 
 // Display the car info for each car right next to it
 void display_car_info(Vehicle car){
-  textFont (createFont("Arial Bold",12));
   Vec2 car_pos = car.getPosition();
   float a = car.getAngle();
   Vec2 car_velocity = car.getLinearVelocity();
@@ -183,7 +184,11 @@ synchronized void draw() {
   if(won){
     // The WIN animation is separated into different animation states
     // which follow each other. Each state ends if it's counter expires.
+    
     if (animationState == 0){
+      animationState = 1;
+    }
+    if (animationState == 1){
       // state 0: fade the background to black... 
       image(bg,0,0);
       fill(0,animationCounter1);
@@ -197,20 +202,22 @@ synchronized void draw() {
         rotate(animationCounter1/80.0*PI);
         image(goal,-goal.width/2, -goal.height/2);
       popMatrix();
-      animationCounter1 = animationCounter1 + 20;
+      // 255/frameRate ist one second
+      animationCounter1 = animationCounter1 + int(255/frameRate);
       if(animationCounter1 > 255){
         background(0);
-        animationState = 1;
+        animationState = 2;
       }
     }
-    if (animationState == 1){
+    if (animationState == 2){
       // state 1: create the text and blend it in from black by using
       // a rectangle to cover it. if the goal marker is more to the right,
       // the text is drawn on it's left side and vice versa.
+      textFont (createFont("Arial Bold",80));
+      
       if(goalPosition.x  > width/2){ 
         textAlign(RIGHT);
         fill(255);
-        textFont (createFont("Arial Bold",80));
         text("PLAYER "+str(winner)+" WINS!",goalPosition.x-20,goalPosition.y+75);
         
         fill(0,255-animationCounter2);
@@ -220,7 +227,6 @@ synchronized void draw() {
       else{
         textAlign(LEFT);
         fill(255);
-        textFont (createFont("Arial Bold",80));
         text("PLAYER "+str(winner)+" WINS!",goalPosition.x+130,goalPosition.y+75);
         fill(0,255-animationCounter2); // use black with alpha 10
         rectMode(CORNER);
@@ -234,10 +240,7 @@ synchronized void draw() {
         rotate(animationCounter1/80.0*PI);
         image(goal,-goal.width/2, -goal.height/2);
       popMatrix();
-      animationCounter2 = animationCounter2 + 10;
-      if(animationCounter2 > 255){
-        animationState = 3;
-      }
+      animationState = 3;
     }
     if (animationState == 3){
       // In this state, we wait for the keypress that sets
@@ -256,12 +259,16 @@ synchronized void draw() {
         wave.setAmplitude(0.1);
         wave1.setAmplitude(0.1);
       }
+      
+      // reset Font
+      textFont (createFont("Arial Bold",12));
+      
       // Now get me a new set of vehicles!
       createVehicles();
     }
  
   }else{    
-    // Nobody has won yet, kust render the game.
+    // Nobody has won yet, just render the game.
     // Match the vehicle sound pitch to their speeds
     wave.setFrequency(40+(int(vehicles.get(0).getSpeed()*1.5)));
     wave1.setFrequency(40+(int(vehicles.get(1).getSpeed()*1.5)));
@@ -325,8 +332,7 @@ synchronized void draw() {
   }
   }
   // Display FPS
-  //textFont (createFont("Arial Bold",12));
-  //text(int(frameRate),20,30);
+  text(int(frameRate),20,30);
   if(DEBUG) println("overall draw time:  " + (millis() - startmillis) + "\n");
 }
 
