@@ -50,8 +50,10 @@ int winner = 0;
 // Are there already borders?
 int borderspresent = 0;
 // Wanna have debug car infos displayed?
-boolean show_car_info = true;
+boolean show_car_info = false;
 boolean ctrl_pressed = false;
+boolean DEBUG=false;
+int startmillis;
 // Is the sound muted?
 boolean muted = true;
 // Fonts for game infos
@@ -60,9 +62,10 @@ PFont fps_font;
 
 void setup() {
   // Full size playfield
-  size(displayWidth, displayHeight);
+  size(displayWidth, displayHeight,P2D);
+
   // Set fixed framerate
-  frameRate(60);
+  frameRate(40);
   noStroke();
   // Render it smoooooth!
   smooth();
@@ -174,6 +177,7 @@ void display_car_info(Vehicle car){
 }
 
 synchronized void draw() {
+    startmillis = millis();
   // Has anybody won the THE GAME?
   // If so, play the WIN animation 
   if(won){
@@ -261,12 +265,20 @@ synchronized void draw() {
     // Match the vehicle sound pitch to their speeds
     wave.setFrequency(40+(int(vehicles.get(0).getSpeed()*1.5)));
     wave1.setFrequency(40+(int(vehicles.get(1).getSpeed()*1.5)));
+    if(DEBUG) println("after audio:        " + (millis()-startmillis));
     // We must always step through time!
     float frame_render_time = 1/frameRate;
-    box2d.world.step(frame_render_time,(int)(frame_render_time*120),(int)(frame_render_time*120));
-    for (Vehicle car: vehicles) {
-      car.update(frame_render_time);
-    }
+    
+    
+    if(DEBUG) println("fps: " + frameRate);
+  
+  if(DEBUG) println("before physics:     " + (millis()-startmillis));
+   box2d.world.step(frame_render_time,(int)(frame_render_time*120),(int)(frame_render_time*120));
+  if(DEBUG) println("after physics:      " + (millis()-startmillis));
+  for (Vehicle car: vehicles) {
+    car.update(frame_render_time);
+  }
+  if(DEBUG) println("after car update:   " + (millis()-startmillis));
   
   /*if(frameRate < 20){
     draw_rate++;
@@ -276,14 +288,19 @@ synchronized void draw() {
   
   if(frameCount%draw_rate==0){ 
     // Draw background
+    
     image(bg, 0, 0); 
+    
+    if(DEBUG) println("after bg display:   " + (millis()-startmillis));
     // Draw scaled goal graphic
     pushMatrix();
     translate(goalPosition.x,goalPosition.y);
     scale (0.35);
     image(goal,0,0);
     popMatrix();
-
+    
+     if(DEBUG) println("after goal display: " + (millis()-startmillis));
+    
   // Display all the vehicles
   for (Vehicle car: vehicles) {
     car.display();
@@ -292,11 +309,12 @@ synchronized void draw() {
       display_car_info(car);
     }
   }
+  if(DEBUG) println("after car display:  " + (millis()-startmillis));
   // Display polygon boundaries
   for (CustomBoundary cs: customBoundaries){
     cs.display();
   }
-
+  if(DEBUG) println("after boundaries:   " + (millis()-startmillis));
   }
   for(Vehicle vehicle: vehicles){
     // Check if any of the cars is at goal position and trigger WIN if true
@@ -307,8 +325,9 @@ synchronized void draw() {
   }
   }
   // Display FPS
-  textFont (createFont("Arial Bold",12));
-  text(int(frameRate),20,30);
+  //textFont (createFont("Arial Bold",12));
+  //text(int(frameRate),20,30);
+  if(DEBUG) println("overall draw time:  " + (millis() - startmillis) + "\n");
 }
 
 // If a player wins, mute vehicle sounds, initialize WIN animation
@@ -349,7 +368,7 @@ void keyReleased(KeyEvent e)
 { 
   int keyCode = e.getKeyCode();
   char key = e.getKeyChar();
-  println("Key "+key+" : "+keyCode);
+  if(DEBUG) println("Key "+key+" : "+keyCode);
   if(keyCode == 27) exit();
   if(keyCode == 17) ctrl_pressed = false;
   //Vehicle currentVehicle = vehicles.get(0);
