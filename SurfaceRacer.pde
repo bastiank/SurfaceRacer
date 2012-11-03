@@ -118,7 +118,7 @@ void createVehicles(){
   // Avoid redundancies. Destroy all cars before creating new ones. Save the planet!
   destroyVehicles();
   // Create a random vehicle
-  switch(int(random(5))){
+  switch(int(random(6))){
     case 0:
       vehicles.add(new Bike(100,100,-PI/2,-1,37,39,38,40));
       break;  
@@ -133,10 +133,13 @@ void createVehicles(){
       break;  
     case 4:
       vehicles.add(new Bus(100,100,-PI/2,-1,37,39,38,40));
+      break;
+    case 5:
+      vehicles.add(new CarBack(100,100,-PI/2,-1,37,39,38,40));
       break;  
   }
   // Create another random vehicle
-  switch(int(random(5))){
+  switch(int(random(6))){
     case 0:
       vehicles.add(new Bike(displayWidth-100,displayHeight-100,PI/2,-1,65,68,87,83));
       break;  
@@ -151,6 +154,9 @@ void createVehicles(){
       break;  
     case 4:
       vehicles.add(new Bus(displayWidth-100,displayHeight-100,PI/2,-1,65,68,87,83));
+      break;
+    case 5:
+      vehicles.add(new CarBack(displayWidth-100,displayHeight-100,PI/2,-1,65,68,87,83));
       break;  
   }
 }
