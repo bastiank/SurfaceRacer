@@ -37,11 +37,11 @@ class CarBack extends Vehicle {
     Wheel leftWheel = new Wheel(carBody, new Vec2(-carBody.width/2,carBody.height/2-48));
     leftWheel.ground_friction = 1000;
     leftWheel.setSteeringKeys(left,right);
-    leftWheel.ground_friction = 800;
+    //leftWheel.ground_friction = 800;
     Wheel rightWheel = new Wheel(carBody,new Vec2(carBody.width/2,carBody.height/2-48));
     rightWheel.ground_friction = 1000;
     rightWheel.setSteeringKeys(left,right);
-    rightWheel.ground_friction = 800;
+    //rightWheel.ground_friction = 800;
     return carBody;
   }
  
