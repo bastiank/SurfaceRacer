@@ -23,7 +23,11 @@ Oscil       wave1;
 OscP5 oscP5;
 // A reference to our box2d world
 PBox2D box2d;
-
+//My animated text
+AnimatedText mytext;
+AnimatedText intro1;
+AnimatedText intro2;
+AnimatedText intro3;
 int draw_rate = 1;
 
 // A list for all of our outer boundaries
@@ -40,6 +44,7 @@ PImage goal;
 Vec2 goalPosition =new Vec2(1760,100);
 // Has anybody won THE GAME yet?
 Boolean won = false;
+Boolean intro = true;
 // Several counters for the WIN animation
 int animationState = 0;
 int animationCounter1 = 0;
@@ -71,7 +76,10 @@ void setup() {
   smooth();
   /*frameRate(120);
   size(displayWidth, displayHeight);*/
-  
+  // Build intro text
+  intro1 =  new AnimatedText("surface",0.5,200,100);
+  intro2 =  new AnimatedText("racer",0.5,250,300);
+  intro3 =  new AnimatedText("2 0 1 2",0.2,200,500);
   // Our sound generator
   minim = new Minim(this);
   // use the getLineOut method of the Minim object to get an AudioOutput object
@@ -181,28 +189,39 @@ synchronized void draw() {
     startmillis = millis();
   // Has anybody won the THE GAME?
   // If so, play the WIN animation 
-  if(won){
-    // The WIN animation is separated into different animation states
-    // which follow each other. Each state ends if it's counter expires.
-    
+  if (intro){
+    background(0);
     if (animationState == 0){
-      animationState = 1;
+      intro1.animate(10);
+      intro1.display();  
+      if (intro1.animationFinished()) animationState = 1; 
     }
     if (animationState == 1){
+      intro2.animate(10);
+      intro2.display();  
+      intro1.display();  
+      if (intro2.animationFinished()) animationState = 2; 
+    }
+    if (animationState == 2){
+      if (!intro3.animationFinished())intro3.animate(10);
+      intro3.display();  
+      intro2.display();
+      intro1.display();    
+      //if (intro3.animationFinished()) animationState = 3; 
+    }
+    if (animationState == 3){
+      animationState = 0;
+      intro = false;
+    }
+  }
+  else if(won){
+    
+    if (animationState == 0){
       // state 0: fade the background to black... 
       image(bg,0,0);
       fill(0,animationCounter1);
       rectMode(CORNER);
       rect(0,0,width,height);
-      //...and rotate the goal graphic
-      pushMatrix();
-        translate(goalPosition.x,goalPosition.y);
-        scale (.35);
-        translate(goal.width/2, goal.height/2);
-        rotate(animationCounter1/80.0*PI);
-        image(goal,-goal.width/2, -goal.height/2);
-      popMatrix();
-      // 255/frameRate ist one second
       animationCounter1 = animationCounter1 + int(255/frameRate);
       if(animationCounter1 > 255){
         background(0);
@@ -210,59 +229,19 @@ synchronized void draw() {
       }
     }
     if (animationState == 2){
-      // state 1: create the text and blend it in from black by using
-      // a rectangle to cover it. if the goal marker is more to the right,
-      // the text is drawn on it's left side and vice versa.
-      textFont (createFont("Arial Bold",80));
-      
-      if(goalPosition.x  > width/2){ 
-        textAlign(RIGHT);
-        fill(255);
-        text("PLAYER "+str(winner)+" WINS!",goalPosition.x-20,goalPosition.y+75);
-        
-        fill(0,255-animationCounter2);
-        rectMode(CORNER);
-        rect(goalPosition.x-1000,goalPosition.y,goalPosition.x,goalPosition.y+200);
-      }
-      else{
-        textAlign(LEFT);
-        fill(255);
-        text("PLAYER "+str(winner)+" WINS!",goalPosition.x+130,goalPosition.y+75);
-        fill(0,255-animationCounter2); // use black with alpha 10
-        rectMode(CORNER);
-        rect(goalPosition.x+1000,goalPosition.y,goalPosition.x,goalPosition.y+200); 
-      }
-      // Draw the goal image
-      pushMatrix();
-        translate(goalPosition.x,goalPosition.y);
-        scale (.35);
-        translate(goal.width/2, goal.height/2);
-        rotate(animationCounter1/80.0*PI);
-        image(goal,-goal.width/2, -goal.height/2);
-      popMatrix();
-      animationState = 3;
+      if (!mytext.animationFinished())mytext.animate(10);
+      mytext.display();  
+      //if (mytext.animationFinished()) animationState = 3; 
     }
     if (animationState == 3){
-      // In this state, we wait for the keypress that sets
-      // The state to 4. While we wait, we can observe the 
-      // impressive grahpical effects of the WIN animation
-    }  
-    if (animationState == 4){
       // Shut down the WIN animation in a professional fashion
       won = false;
       animationState = 0;
-      animationCounter1 = 0;
-      animationCounter2 = 0;
-      animationCounter3 = 0;
       // Turn the vehicle sound back on if it is not muted
       if(!muted){
         wave.setAmplitude(0.1);
         wave1.setAmplitude(0.1);
       }
-      
-      // reset Font
-      textFont (createFont("Arial Bold",12));
-      
       // Now get me a new set of vehicles!
       createVehicles();
     }
@@ -342,6 +321,7 @@ void win(int carNumber) {
  wave1.setAmplitude(0.0);
  won = true;
  winner = carNumber+1;
+ mytext = new AnimatedText(("Player "+str(winner)+" wins!"),0.5,300,displayHeight/2);
 }
 
 boolean sketchFullScreen() {
@@ -355,17 +335,18 @@ void keyPressed(KeyEvent e)
   char key = e.getKeyChar();
   if(keyCode == 17) ctrl_pressed = true;
   if(!ctrl_pressed){
-    if (won == false){
-      for(Vehicle car: vehicles){
-        car.carBody.keyPressed(e);
+    if ((won == true)||(intro == true)){
+      if(keyCode == 32){
+        if (animationState == 2){
+          animationState = 3;
+        }
       }
     }
     else{
-      if(keyCode == 32){
-        if (animationState == 3){
-          animationState = 4;
-        }
+        for(Vehicle car: vehicles){
+        car.carBody.keyPressed(e);
       }
+      
     }
   }
 }

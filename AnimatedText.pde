@@ -68,7 +68,7 @@ public class AnimatedText{
       if (alphaCounters[i] > 99) alphaCounters[i] = 99;
     }
     //Last value is at limit, which means all characters have completed the animation
-    if (scaleCounters[scaleCounters.length-1] > 99) finished = true;
+    if (scaleCounters[scaleCounters.length-1] > 98) finished = true;
     //Load the current animation state for scale/fade from lookup table of curves
     for (int i = 0;i<scaleCounters.length;i++){
       if (scaleCounters[i] >= 0)scaleValues[i] = scaleCurve[scaleCounters[i]]/100.0;
@@ -86,14 +86,16 @@ public class AnimatedText{
     //Counter over all characters in our text image list
     int charCounter = 0;
     //Move to designated textposition
-    translate(xpos,ypos);
+    
+    
     //Iterate over all character images in our text
     for (PImage img : wordImages){ 
       pushMatrix();
+        translate(xpos,ypos);
         rectMode(CENTER);
         //Move to next character
         //Character images are 150 pixels wide
-        translate(charCounter *int(150*fontSize) ,0);
+        translate((charCounter*int(160*fontSize)),0);
         //Scale the character image to current scaleValue
         //Modify by font size 
         scale (scaleValues[charCounter]*fontSize);
@@ -103,8 +105,8 @@ public class AnimatedText{
         //over the character image to implement fading
         fill(0,alphaValues[charCounter]);
         rect(0,0,img.width,img.height);
-     charCounter ++;
-    popMatrix();
+        charCounter ++;
+      popMatrix();
    }
   
   }
@@ -169,7 +171,6 @@ public class AnimatedText{
     for (int i = 0; i < alphaCurve.length; i ++){
       alphaCurve[i] = int((pow(i,3))/3800);
       scaleCurve[i] = int(sin(i/55.0)*110.0);
-      println (alphaCurve[i]);
     }
   }
 }
