@@ -105,8 +105,8 @@ public class AnimatedText{
         image(img,-img.width/2,-img.height/2);
         //Draw a black rectangle with current alpha value
         //over the character image to implement fading
-        fill(0,alphaValues[charCounter]);
-        rect(0,0,img.width,img.height);
+        //fill(0,alphaValues[charCounter]);
+        //rect(0,0,img.width,img.height);
         charCounter ++;
       popMatrix();
    }

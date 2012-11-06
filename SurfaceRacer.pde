@@ -140,7 +140,7 @@ void createVehicles(){
   // Avoid redundancies. Destroy all cars before creating new ones. Save the planet!
   destroyVehicles();
   // Create a random vehicle
-  switch(5){//int(random(6))){
+  switch(int(random(6))){
     case 0:
       vehicles.add(new Bike(100,100,-PI/2,-1,37,39,38,40));
       break;  
