@@ -24,6 +24,8 @@ OscP5 oscP5;
 // A reference to our box2d world
 PBox2D box2d;
 //My animated text
+float fontSize;
+String text1;
 AnimatedText mytext;
 AnimatedText intro1;
 AnimatedText intro2;
@@ -77,9 +79,15 @@ void setup() {
   /*frameRate(120);
   size(displayWidth, displayHeight);*/
   // Build intro text
-  intro1 =  new AnimatedText("surface",0.5,200,100);
-  intro2 =  new AnimatedText("racer",0.5,250,300);
-  intro3 =  new AnimatedText("2 0 1 2",0.2,200,500);
+  fontSize = 1;
+  text1 = "surface";
+  intro1 =  new AnimatedText(text1,fontSize,int((displayWidth/2)-160*fontSize*(text1.length()/2)),300);
+  fontSize = 1;
+  text1 = "racer";
+  intro2 =  new AnimatedText(text1,fontSize,int((displayWidth/2)-160*fontSize*(text1.length()/2)),550);
+  fontSize = 0.3;
+  text1 = "2012 by se²bastian³";
+  intro3 =  new AnimatedText(text1,fontSize,int((displayWidth/2)-160*fontSize*(text1.length()/2)),800);
   // Our sound generator
   minim = new Minim(this);
   // use the getLineOut method of the Minim object to get an AudioOutput object
@@ -91,7 +99,8 @@ void setup() {
   wave.patch( out );
   wave1.patch( out );
   // Load background image 
-  bg = loadImage("120799-2560x1600.jpg");
+  //bg = loadImage("120799-2560x1600.jpg");
+  bg = loadImage("Asphalt.jpg");
   // Load goal image
   goal=loadImage("goal.png");
   // Initialize OSC listener
@@ -189,32 +198,33 @@ synchronized void draw() {
     startmillis = millis();
   // Has anybody won the THE GAME?
   // If so, play the WIN animation 
-  if (intro){
+  if (intro == true){
     background(0);
     if (animationState == 0){
-      intro1.animate(10);
+      intro1.animate(5);
       intro1.display();  
       if (intro1.animationFinished()) animationState = 1; 
     }
     if (animationState == 1){
-      intro2.animate(10);
+      intro2.animate(5);
       intro2.display();  
       intro1.display();  
       if (intro2.animationFinished()) animationState = 2; 
     }
     if (animationState == 2){
-      if (!intro3.animationFinished())intro3.animate(10);
+      if (!intro3.animationFinished())intro3.animate(5);
       intro3.display();  
       intro2.display();
       intro1.display();    
       //if (intro3.animationFinished()) animationState = 3; 
+      //println("In state 3...");
     }
     if (animationState == 3){
       animationState = 0;
       intro = false;
     }
   }
-  else if(won){
+  else if(won == true){
     
     if (animationState == 0){
       // state 0: fade the background to black... 
@@ -222,7 +232,7 @@ synchronized void draw() {
       fill(0,animationCounter1);
       rectMode(CORNER);
       rect(0,0,width,height);
-      animationCounter1 = animationCounter1 + int(255/frameRate);
+      animationCounter1 = animationCounter1 + int(500/frameRate);
       if(animationCounter1 > 255){
         background(0);
         animationState = 2;
@@ -305,7 +315,7 @@ synchronized void draw() {
   for(Vehicle vehicle: vehicles){
     // Check if any of the cars is at goal position and trigger WIN if true
     float d = sqrt(pow(vehicle.getPosition().x-(goalPosition.x+50),2) + pow(vehicle.getPosition().y-(goalPosition.y+50),2));
-    if(d < 30) {
+    if(d < 60) {
       win(vehicles.indexOf(vehicle));
     }
   }
@@ -321,7 +331,10 @@ void win(int carNumber) {
  wave1.setAmplitude(0.0);
  won = true;
  winner = carNumber+1;
- mytext = new AnimatedText(("Player "+str(winner)+" wins!"),0.5,300,displayHeight/2);
+ fontSize = 0.5;
+ text1 = "Player "+str(winner)+" wins!";
+ mytext = new AnimatedText(text1,fontSize,int((displayWidth/2)-160*fontSize*(text1.length()/2)),600);
+ //mytext = new AnimatedText(("Player "+str(winner)+" wins!"),0.5,300,displayHeight/2);
 }
 
 boolean sketchFullScreen() {

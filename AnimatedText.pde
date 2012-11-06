@@ -6,7 +6,7 @@ public class AnimatedText{
   //List to hold our word
   ArrayList<PImage> wordImages = new ArrayList<PImage>();
   //List of character images
-  PImage[] alphabet = new PImage[39];
+  PImage[] alphabet = new PImage[41];
   //Fontsize
   float fontSize;
   //Processed values for scaling and fading the text
@@ -46,13 +46,15 @@ public class AnimatedText{
     for (int characters = 0; characters < theText.length(); characters ++){
       //Get ascii number of character
       int asc = int(theText.charAt(characters));
-      //Is it a character or number or '!' or '?' or ' ' ? 
+      //Is it a character or number or '!' or '?' or ' ' or '²' or '³' ? 
       //Load the matching image from alphabet
-      if (asc>64)wordImages.add(alphabet[asc-55]);
+      if ((asc>64)&&(asc<100))wordImages.add(alphabet[asc-55]);
       if (asc<58 && asc > 47)wordImages.add(alphabet[asc-48]);
       if (asc==63)wordImages.add(alphabet[37]);
       if (asc==33)wordImages.add(alphabet[36]);
       if (asc==32)wordImages.add(alphabet[38]);
+      if (asc==178)wordImages.add(alphabet[39]);
+      if (asc==179)wordImages.add(alphabet[40]);
     } 
   }
   
@@ -164,6 +166,8 @@ public class AnimatedText{
     alphabet[36] = loadImage("ex.png");
     alphabet[37] = loadImage("qu.png");
     alphabet[38] = loadImage("_.png");
+    alphabet[39] = loadImage("pow2.png");
+    alphabet[40] = loadImage("pow3.png");
   }
   
   //Generate lookup tables for scale/fade curves
