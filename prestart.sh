@@ -1,5 +1,5 @@
 #!/bin/sh
 
-cd /home/surface/Downloads/SurfaceRacer/
+cd /home/surfaceracer/SurfaceRacer/
 ./start.sh
 
